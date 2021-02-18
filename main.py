@@ -1,3 +1,4 @@
+import json
 from googleapiclient.discovery import build
 
 # TODO: REPLACE THIS API KEY BEFORE ADDING TO GITHUB!!!
@@ -17,5 +18,7 @@ request = service.search().list(
 # Execute that request
 response = request.execute()
 
+info = json.dumps(response, indent=4)
+
 # Print the result. It'll be formatted badly but whatever
-print(response)
+print(response["items"][0]["id"]["videoId"])
