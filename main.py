@@ -8,7 +8,12 @@ from datetime import date
 from googleapiclient.discovery import build
 
 # TODO: REPLACE THIS API KEY BEFORE ADDING TO GITHUB!!!
-api_key = 'AIzaSyBk1k4xQM8NCr-OfUBTVFO_lKQilf6WMHU'
+# Open the file with the api key
+apiKeyFile = open('.key', mode='r')
+# Read the api key to a variable
+api_key = apiKeyFile.read()
+# Close the api key file
+apiKeyFile.close()
 
 # Create a service from our google api with the service name, version and out api key
 service = build('youtube', 'v3', developerKey=api_key)
