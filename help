@@ -1,0 +1,29 @@
+Welcome to holo-dl, an application that archives HoloLive Streams!
+
+Read before using:
+Please do not re-upload the full stream. It's against HoloLive rules and overall not cool.
+If you do, you're taking away views, likes, comments, subscribers and money from the HoloLive members.
+I won't be responsible for what you do with the streams you save, but this is more than just a disclaimer.
+In the future, a like and comment feature will be implemented so that you're not just taking the stream and giving nothing in return.
+Until then, try your best to make all their streams and like, comment and subscribe on your own.
+
+Set preferences:
+    Use "add" followed by the channel's home page URL followed by a nickname of the channel to add this channel to the queue
+    Use "remove" followed by the channel's nickname OR channel URL to remove it from the queue
+
+To run:
+    Use "go" to run the program
+    To set the interval time, add the number of seconds you want to wait until the service checks for new streams after "go"
+    The recommended (and default) value is 120.
+
+Examples:
+
+./run go 180
+Run the service, check for new streams every 3 minutes
+
+./run add {channel url} Okayu
+Add {channel url}'s channel to the queue under the nickname "Okayu"
+
+./run remove Okayu
+Remove the entry with the nickname "Okayu" from the queue
+
