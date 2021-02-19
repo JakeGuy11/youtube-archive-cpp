@@ -1,7 +1,8 @@
-#!/usr/bin/bash
+#!/usr/bin/python
 
 # Grab all needed imports
 import sys
+import os
 import subprocess
 from pathlib import Path
 from datetime import date
