@@ -7,23 +7,13 @@ I won't be responsible for what you do with the streams you save, but this is mo
 In the future, a like and comment feature will be implemented so that you're not just taking the stream and giving nothing in return.
 Until then, try your best to make all their streams and like, comment and subscribe on your own.
 
-Set preferences:
-    Use "add" followed by the channel's home page URL followed by a nickname of the channel to add this channel to the queue
-    Use "remove" followed by the channel's nickname OR channel URL to remove it from the queue
+Queue/Meta information:
+    -h, --help                                       Show this help message
+    -a, --add CHANNELURL NICKNAME                    Add a channel to the queue. Follow this by the channel's home page URL and an alphanumeric nickname of choice
+    -r, --remove IDENTIFIER                          Remove a channel. Follow by the channel's nickname OR channel URL
+    -l, --list                                       List all channels and corresponding nicknames
 
 To run:
-    Use "go" to run the program
-    To set the interval time, add the number of seconds you want to wait until the service checks for new streams after "go"
-    The recommended (and default) value is 120.
-
-Examples:
-
-./run go 180
-Run the service, check for new streams every 3 minutes
-
-./run add {channel url} Okayu
-Add {channel url}'s channel to the queue under the nickname "Okayu"
-
-./run remove Okayu
-Remove the entry with the nickname "Okayu" from the queue
-
+    -s, --start                                      Start the program after all other operations are completed
+    -i, --interval TIME                              Set the interval time, the time between checking for new livestreams. Default is 120
+    -t, --temp CHANNELURL                            Add a temporary channel to scan for. This will not be saved for future uses
