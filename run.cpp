@@ -5,7 +5,7 @@
 #include<array>
 #include<vector>
 
-std::vector<std::pair<std::string,std::string>> sessionPref(0);
+std::vector<std::pair<std::string,std::string>> sessionPref;
 std::vector<std::pair<std::string,std::string>> updatedPref;
 std::string prefString = "";
 std::string homeDir = getenv("HOME");
@@ -36,18 +36,30 @@ void add(std::string channelId, std::string nickname)
     }
 }
 
-void pullList()
-{
-
-}
-
-void pushList()
-{
-
-}
-
 void remove(std::string remArg)
 {
+    std::string removeId = "";
+    try
+    {
+        removeId = parseChannelURL(remArg);
+        for(int i = 0; i < sessionPref.size(); i++)
+        {
+            if(sessionPref[i].first == removeId) sessionPref.erase(sessionPref.begin()+i);
+        }
+    }
+    catch (...)
+    {
+        removeId = remArg;
+        for(int i = 0; i < sessionPref.size(); i++)
+        {
+            if(sessionPref[i].second == removeId) sessionPref.erase(sessionPref.begin()+i);
+        }
+    }
+
+    for(std::pair<std::string,std::string> currentPair : sessionPref)
+    {
+        std::cout << currentPair.first << ", " << currentPair.second << std::endl;
+    }
 
 }
 
