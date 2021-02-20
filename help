@@ -15,5 +15,5 @@ Queue/Meta information:
 
 To run:
     -s, --start                                      Start the program after all other operations are completed
-    -i, --interval TIME                              Set the interval time, the time between checking for new livestreams. Default is 120
-    -t, --temp CHANNELURL                            Add a temporary channel to scan for. This will not be saved for future uses
+    -i, --interval TIME                              Set the interval time, the time between checking for new livestreams. Default is 120. Must be an integer
+    -t, --temp CHANNELURL NICKNAME                   Add a temporary channel to scan for. This will not be saved for future uses

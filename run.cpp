@@ -6,10 +6,12 @@
 #include<vector>
 
 std::vector<std::pair<std::string,std::string>> sessionPref;
+std::vector<std::pair<std::string,std::string>> otPref;
 std::vector<std::pair<std::string,std::string>> updatedPref;
 std::string prefString = "";
 std::string homeDir = getenv("HOME");
 std::string holoDir = homeDir + "/.holo-dl/";
+int timeInterval = 120;
 
 std::string parseChannelURL(std::string url)
 {
@@ -30,10 +32,6 @@ void add(std::string channelId, std::string nickname)
 {
     std::pair<std::string,std::string> tempPair (channelId,nickname);
     sessionPref.push_back(tempPair);
-    for(std::pair<std::string,std::string> currentPair : sessionPref)
-    {
-        std::cout << currentPair.first << ", " << currentPair.second << std::endl;
-    }
 }
 
 void remove(std::string remArg)
@@ -56,16 +54,41 @@ void remove(std::string remArg)
         }
     }
 
-    for(std::pair<std::string,std::string> currentPair : sessionPref)
-    {
-        std::cout << currentPair.first << ", " << currentPair.second << std::endl;
-    }
-
 }
 
 void list()
 {
-    std::cout << "Print all Channel URLs and Nicknames here" << std::endl;
+    if(sessionPref.empty() && otPref.empty())
+    {
+        std::cout << "Nothing is in the queue" << std::endl;
+    }
+    else if(otPref.empty())
+    {
+        for(std::pair<std::string,std::string> currentPair : sessionPref)
+            {
+                std::cout << currentPair.first << ", " << currentPair.second << std::endl;
+            }
+    }
+    else if(sessionPref.empty())
+    {
+        for(std::pair<std::string,std::string> currentPair : otPref)
+        {
+            std::cout << currentPair.first << ", " << currentPair.second << std::endl;
+        }
+    }
+    else
+    {
+        std::cout << "Saved queue: " << std::endl;
+        for(std::pair<std::string,std::string> currentPair : sessionPref)
+        {
+            std::cout << currentPair.first << ", " << currentPair.second << std::endl;
+        }
+        std::cout << "Temporary queue: " << std::endl;
+        for(std::pair<std::string,std::string> currentPair : otPref)
+        {
+            std::cout << currentPair.first << ", " << currentPair.second << std::endl;
+        }
+    }
 }
 
 void start()
@@ -75,26 +98,31 @@ void start()
 
 void setInterval(int newIntervalTime)
 {
-    std::cout << "Set interval time to " << newIntervalTime << std::endl;
+    if(newIntervalTime < 1)
+    {
+        std::cout << "Interval time is too low. Please enter an integer value greater than zero." << std::endl;
+    }
+    else
+    {
+        timeInterval = newIntervalTime;
+    }
 }
 
-void includeTemp(std::string channelId)
+void includeTemp(std::string channelId, std::string nickname)
 {
-    std::cout << "Temporarily added " << channelId << " to queue" << std::endl;
+    std::pair<std::string,std::string> tempPair (channelId, nickname);
+    otPref.push_back(tempPair);
 }
 
 int main(int argc, char **argv)
 {
-
-    std::cout << holoDir << std::endl;
-
     if(argc < 2)
     {
     std::cerr << "Usage: " << std::endl
         << argv[0] << " --start" << std::endl
         << argv[0] << " --help" << std::endl
         << argv[0] << " --list" << std::endl;
-    //return 1;
+        return 1;
     }
 
     for(int i = 1; i < argc; ++i)
@@ -122,8 +150,15 @@ int main(int argc, char **argv)
             std::string tempInterval = argv[i+1];
             setInterval(std::stoi(tempInterval));
         }else if (std::string(argv[i]) == "-t" || std::string(argv[i]) == "--temp") {
-            std::string tempChannelId = argv[i+1];
-            includeTemp(tempChannelId);
+            try {
+                std::string tempChannelId = parseChannelURL(argv[i+1]);
+                std::string tempNickname = argv[i+2];
+                add(tempChannelId, tempNickname);
+            }
+            catch (...)
+            {
+            std::cout << "The channel URL you've entered is not valid. Please retry." << std::endl;
+            }
         }
 
     }
