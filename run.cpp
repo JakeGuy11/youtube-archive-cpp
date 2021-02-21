@@ -1,5 +1,6 @@
 #include<iostream>
-#include<stdio>
+#include<filesystem>
+#include<cstdio>
 #include<fstream>
 #include<vector>
 #include<sstream>
@@ -88,7 +89,8 @@ std::string readFromFile(std::string filePath)
 
 void writeToFile(std::string filePath, std::string stringToWrite)
 {
-    std::remove(holoPref);
+    const char *filePathChars = filePath.c_str();
+    remove(filePathChars);
     std::ofstream outFile(filePath);
     outFile << stringToWrite;
     outFile.close();
@@ -229,7 +231,7 @@ int main(int argc, char **argv)
             try {
                 std::string tempChannelId = parseChannelURL(argv[i+1]);
                 std::string tempNickname = argv[i+2];
-                add(tempChannelId, tempNickname);
+                includeTemp(tempChannelId, tempNickname);
             }
             catch (...)
             {
