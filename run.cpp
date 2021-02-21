@@ -1,4 +1,5 @@
 #include<iostream>
+#include<stdio>
 #include<fstream>
 #include<vector>
 #include<sstream>
@@ -75,6 +76,22 @@ std::string saveToString(std::vector<std::pair<std::string,std::string>> vectorT
         }
     }
     return returnString;
+}
+
+std::string readFromFile(std::string filePath)
+{
+    std::ifstream ifs(filePath);
+    std::string fileContents( (std::istreambuf_iterator<char>(ifs) ),
+                       (std::istreambuf_iterator<char>()    ) );
+    return fileContents;
+}
+
+void writeToFile(std::string filePath, std::string stringToWrite)
+{
+    std::remove(holoPref);
+    std::ofstream outFile(filePath);
+    outFile << stringToWrite;
+    outFile.close();
 }
 
 void help()
@@ -180,7 +197,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    sessionPref = splitIntoVector("preUrl1;preName1|preUrl2;preName2");
+    sessionPref = splitIntoVector(readFromFile(holoPref));
 
     bool run = false;
 
@@ -222,6 +239,6 @@ int main(int argc, char **argv)
 
     }
 
-    std::cout << saveToString(sessionPref) << std::endl;
+    writeToFile(holoPref, saveToString(sessionPref));
 
 }
