@@ -4,6 +4,16 @@
 #include<fstream>
 #include<vector>
 #include<sstream>
+#include<chrono>
+#include<thread>
+#include<functional>
+#include<future>
+#include <memory>
+#include <stdexcept>
+#include <array>
+#include <unistd.h>
+#include <fcntl.h>
+#include <cstring>
 
 std::vector<std::pair<std::string,std::string>> sessionPref;
 std::vector<std::pair<std::string,std::string>> otPref;
@@ -11,7 +21,7 @@ std::string prefString = "";
 std::string homeDir = getenv("HOME");
 std::string holoDir = homeDir + "/.holo-dl/";
 std::string holoPref = homeDir + "/.holo-dl/.queue";
-int timeInterval = 120;
+int timeInterval = 5;
 
 std::string parseChannelURL(std::string url)
 {
@@ -20,6 +30,18 @@ std::string parseChannelURL(std::string url)
 
     channelWithSlash.erase(0,1);
     return channelWithSlash;
+}
+
+std::vector<std::string> parsePythonOutput(std::string const &str)
+{
+    std::stringstream tempStream(str);
+    std::string foundString;
+    std::vector<std::string> tempVec;
+
+    while (std::getline(tempStream, foundString, ';')) {
+        tempVec.push_back(foundString);
+    }
+    return tempVec;
 }
 
 std::vector<std::pair<std::string,std::string>> splitIntoVector(std::string const &str)
@@ -108,7 +130,7 @@ void add(std::string channelId, std::string nickname)
     sessionPref.push_back(tempPair);
 }
 
-void remove(std::string remArg)
+void removeEntry(std::string remArg)
 {
     std::string removeId = "";
     try
@@ -165,11 +187,6 @@ void list()
     }
 }
 
-void start()
-{
-    std::cout << "Starting..." << std::endl;
-}
-
 void setInterval(int newIntervalTime)
 {
     if(newIntervalTime < 1)
@@ -186,6 +203,68 @@ void includeTemp(std::string channelId, std::string nickname)
 {
     std::pair<std::string,std::string> tempPair (channelId, nickname);
     otPref.push_back(tempPair);
+}
+
+bool fileExists(const std::string& fileName) {
+    std::ifstream f(fileName.c_str());
+    return f.good();
+}
+
+std::string getCommandOutput(const char* cmd)
+{
+    std::array<char, 128> buffer;
+    std::string result;
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    if (!pipe) {
+        throw std::runtime_error("popen() failed!");
+    }
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+    return result;
+}
+
+void startArchive(std::string youtubeURL, std::string saveName, std::string activityName)
+{
+    std::cout << "savename: " << saveName << std::endl;
+    std::string activityFilePath = holoDir + "." + activityName;
+    std::cout << activityFilePath << std::endl;
+    std::ofstream outFile(activityFilePath);
+    outFile << "active" << std::endl;
+    outFile.close();
+    std::string command = "ffmpeg -i `youtube-dl -f best -g " + youtubeURL + "` " + saveName;
+    std::cout << command << std::endl;
+    system(command.c_str());
+    const char *activityFilePathChars = activityFilePath.c_str();
+    remove(activityFilePathChars);
+}
+
+void periodic()
+{
+    std::cout << "Starting checks..." << std::endl;
+    for(int i = 0; i < sessionPref.size(); i++)
+    {
+        if(fileExists(holoDir + "." + sessionPref[i].second))
+        {
+            std::cout << sessionPref[i].second + " activity file exists, stream is being archived" << std::endl;
+        }
+        else
+        {
+            std::cout << sessionPref[i].second + " activity file doesn't exist, checking for stream..." << std::endl;
+            std::string arguments = "./main.py " + sessionPref[i].first + " " + sessionPref[i].second;
+            std::string pythonOut = getCommandOutput(arguments.c_str());
+            std::vector<std::string> parsedPython = parsePythonOutput(pythonOut);
+            try
+            {
+                startArchive(parsedPython[0], parsedPython[1], parsedPython[2]);
+            }
+            catch (...)
+            {
+                std::cout << "Stream is not active" << std::endl;
+            }
+
+        }
+    }
 }
 
 int main(int argc, char **argv)
@@ -219,7 +298,7 @@ int main(int argc, char **argv)
             }
         }else if (std::string(argv[i]) == "-r" || std::string(argv[i]) == "--list") {
             std::string remArg = argv[i+1];
-            remove(remArg);
+            removeEntry(remArg);
         }else if (std::string(argv[i]) == "-l" || std::string(argv[i]) == "--list") {
             list();
         }else if (std::string(argv[i]) == "-s" || std::string(argv[i]) == "--start") {
@@ -240,7 +319,24 @@ int main(int argc, char **argv)
         }
 
     }
-
     writeToFile(holoPref, saveToString(sessionPref));
+
+    if(run)
+    {
+        int loopCount = 0;
+        while(true)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            if(loopCount >= (timeInterval * 1000)/50)
+            {
+                periodic();
+                loopCount = 0;
+            }
+            else
+            {
+            loopCount++;
+            }
+        }
+    }
 
 }

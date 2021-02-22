@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 # Grab all needed imports
+import atexit
 import sys
 import os
 import subprocess
@@ -34,7 +35,6 @@ channelResponse = channelRequest.execute()
 
 # For now all we need is the channel name, although we're not using it right now
 channelName = channelResponse["items"][0]["snippet"]["title"]
-print(channelName)
 
 # -----Get any running livestreams-----
 
@@ -60,26 +60,20 @@ homePath = str(Path.home())
 # Get the current date and time, DD-MM-YYYY
 currentDate = date.today().strftime("%d-%m-%Y-")
 # Generate the path to save the stream
-streamPath = homePath + "/.holo-dl/" + currentDate + sys.argv[2] + ".ts"
-# Print the stream path
-print(streamPath)
+streamPath = homePath + "/.holo-dl/" + currentDate + sys.argv[2]
 
 # -----Start the script that will download the stream-----
 
 try:
     # Get the video id (the part after watch?v=)
     streamId = liveResponse["items"][0]["id"]["videoId"]
-    # Print the resulting video id. In the future
-    print(streamId)
     # Generate the full video URL
     youtubeURL = "https://www.youtube.com/watch?v=" + streamId
-    # Print that URL
-    print(youtubeURL)
     # Create and start a process to download the stream
-    proc = subprocess.check_output(["./dl-script.bash", youtubeURL, streamPath, sys.argv[2]])
-    # Print that process output
-    for outLine in proc.splitlines():
-        print(outLine)
+    # proc = subprocess.Popen(["./dl-script.bash", youtubeURL, streamPath, sys.argv[2]])
+    ytdlProc = subprocess.check_output(["youtube-dl", "-f", "best", "-g", youtubeURL])
+    getURL = ytdlProc.decode('ascii').replace("\n", "")
+    print(getURL + ";" + streamPath + ".ts" + ";" + currentDate + sys.argv[2])
 except:
     # Something went wrong, most likely that the user is not streaming
     print("Stream does not exist or has not started")
