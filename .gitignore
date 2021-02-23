@@ -1,3 +1,5 @@
 #exclude the compiled cpp
 
 run
+main.py
+.key

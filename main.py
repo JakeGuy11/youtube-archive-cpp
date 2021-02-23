@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# THIS FILE IS NO LONGER IN USE. IT IS IGNORED BY GIT BUT JUST IN CASE I'M STUPID I'M GONNA KEEP IT SO I DON'T LOOSE ANYTHING I NEED
+
 # Grab all needed imports
 import atexit
 import sys
