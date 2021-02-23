@@ -43,11 +43,11 @@ try:
         # Remove all non-alphanumeric characters so we don't mess up any commands
         return_title = re.sub(r'\W+', '', video_name)
         # Print out a formatted return that the c++ can parse
-        print(video_url + ";" + return_title)
+        print(video_url + ";" + return_title + ".ts")
     else:
         # Generate the title of the saved video from the current date and the user passed title
         return_title = date.today().strftime("%d-%m-%Y-") + sys.argv[2]
         # Print out a formatted return that the c++ can parse
-        print(video_url + ";" + return_title)
+        print(video_url + ";" + return_title + ".ts")
 except:
     print("json error")

@@ -21,7 +21,7 @@ std::string prefString = "";
 std::string homeDir = getenv("HOME");
 std::string holoDir = homeDir + "/.holo-dl/";
 std::string holoPref = homeDir + "/.holo-dl/.queue";
-int timeInterval = 30;
+int timeInterval = 5;
 
 std::string parseChannelURL(std::string url)
 {
@@ -32,7 +32,7 @@ std::string parseChannelURL(std::string url)
     return channelWithSlash;
 }
 
-std::vector<std::string> parsePythonOutput(std::string const &str)
+std::vector<std::string> parsePythonOutput(std::string const str)
 {
     std::stringstream tempStream(str);
     std::string foundString;
@@ -205,7 +205,8 @@ void includeTemp(std::string channelId, std::string nickname)
     otPref.push_back(tempPair);
 }
 
-bool fileExists(const std::string& fileName) {
+bool fileExists(const std::string& fileName)
+{
     std::ifstream f(fileName.c_str());
     return f.good();
 }
@@ -232,7 +233,7 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
     std::ofstream outFile(activityFilePath);
     outFile << "active" << std::endl;
     outFile.close();
-    std::string command = "ffmpeg -i `youtube-dl -f best -g " + youtubeURL + "` " + saveName;
+    std::string command = "ffmpeg -i `youtube-dl -f best -g " + youtubeURL + "` " + holoDir + saveName;
     std::cout << command << std::endl;
     system(command.c_str());
     const char *activityFilePathChars = activityFilePath.c_str();
@@ -251,12 +252,15 @@ void periodic()
         else
         {
             std::cout << sessionPref[i].second + " activity file doesn't exist, checking for stream..." << std::endl;
-            std::string arguments = "./main.py " + sessionPref[i].first + " " + sessionPref[i].second;
+            std::string arguments = "./parse_youtube_data.py " + sessionPref[i].first + " " + sessionPref[i].second + " date";
+            std::cout << arguments << std::endl;
             std::string pythonOut = getCommandOutput(arguments.c_str());
+            std::cout << pythonOut << std::endl;
             std::vector<std::string> parsedPython = parsePythonOutput(pythonOut);
             try
             {
-                startArchive(parsedPython[0], parsedPython[1], parsedPython[2]);
+                //if(parsedPython[0] == "network error")
+                startArchive(parsedPython[0], parsedPython[1], sessionPref[i].second);
             }
             catch (...)
             {
