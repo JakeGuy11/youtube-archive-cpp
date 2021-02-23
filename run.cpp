@@ -21,7 +21,7 @@ std::string prefString = "";
 std::string homeDir = getenv("HOME");
 std::string holoDir = homeDir + "/.holo-dl/";
 std::string holoPref = homeDir + "/.holo-dl/.queue";
-int timeInterval = 5;
+int timeInterval = 30;
 
 std::string parseChannelURL(std::string url)
 {
@@ -241,7 +241,7 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
 
 void periodic()
 {
-    std::cout << "Starting checks..." << std::endl;
+    std::cout << "\nStarting checks..." << std::endl;
     for(int i = 0; i < sessionPref.size(); i++)
     {
         if(fileExists(holoDir + "." + sessionPref[i].second))
@@ -260,9 +260,8 @@ void periodic()
             }
             catch (...)
             {
-                std::cout << "Stream is not active" << std::endl;
+                std::cout << "Stream does not exist or has not started" << std::endl;
             }
-
         }
     }
 }

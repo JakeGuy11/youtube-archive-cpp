@@ -76,4 +76,4 @@ try:
     print(getURL + ";" + streamPath + ".ts" + ";" + currentDate + sys.argv[2])
 except:
     # Something went wrong, most likely that the user is not streaming
-    print("Stream does not exist or has not started")
+    print("err")
