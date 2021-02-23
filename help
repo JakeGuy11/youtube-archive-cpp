@@ -17,3 +17,4 @@ To run:
     -s, --start                                      Start the program after all other operations are completed
     -i, --interval TIME                              Set the interval time in seconds, the time between checking for new livestreams. Default is 30. Must be an integer
     -t, --temp CHANNELURL NICKNAME                   Add a temporary channel to scan for. This will not be saved for future uses
+    -o, --overwrite                                  Force overwrite local streams within a day. If this option is omitted, later streams will be ignored

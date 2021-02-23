@@ -17,6 +17,7 @@
 
 std::vector<std::pair<std::string,std::string>> sessionPref;
 std::vector<std::pair<std::string,std::string>> otPref;
+std::vector<std::future<void>> procVector;
 std::string prefString = "";
 std::string homeDir = getenv("HOME");
 std::string holoDir = homeDir + "/.holo-dl/";
@@ -227,17 +228,18 @@ std::string getCommandOutput(const char* cmd)
 
 void startArchive(std::string youtubeURL, std::string saveName, std::string activityName)
 {
-    std::cout << "savename: " << saveName << std::endl;
+    //std::cout << "savename: " << saveName << std::endl;
     std::string activityFilePath = holoDir + "." + activityName;
-    std::cout << activityFilePath << std::endl;
+    //std::cout << activityFilePath << std::endl;
     std::ofstream outFile(activityFilePath);
     outFile << "active" << std::endl;
     outFile.close();
-    std::string command = "ffmpeg -i `youtube-dl -f best -g " + youtubeURL + "` " + holoDir + saveName;
-    std::cout << command << std::endl;
+    std::string command = "ffmpeg -n -loglevel quiet -i `youtube-dl -f best -g " + youtubeURL + "` " + holoDir + saveName; //-loglevel quiet
+    //std::cout << command << std::endl;
     system(command.c_str());
     const char *activityFilePathChars = activityFilePath.c_str();
     remove(activityFilePathChars);
+    std::cout << activityName << " stream ended or cancelled" << std::endl;
 }
 
 void periodic()
@@ -253,18 +255,19 @@ void periodic()
         {
             std::cout << sessionPref[i].second + " activity file doesn't exist, checking for stream..." << std::endl;
             std::string arguments = "./parse_youtube_data.py " + sessionPref[i].first + " " + sessionPref[i].second + " date";
-            std::cout << arguments << std::endl;
+            //std::cout << arguments << std::endl;
             std::string pythonOut = getCommandOutput(arguments.c_str());
-            std::cout << pythonOut << std::endl;
+            //std::cout << pythonOut << std::endl;
             std::vector<std::string> parsedPython = parsePythonOutput(pythonOut);
             try
             {
-                //if(parsedPython[0] == "network error")
-                startArchive(parsedPython[0], parsedPython[1], sessionPref[i].second);
+                //std::future<void> result( std::async(startArchive, parsedPython[0], parsedPython[1], sessionPref[i].second));
+                procVector.push_back(std::async(startArchive, parsedPython[0], parsedPython[1], sessionPref[i].second));
+                //startArchive(parsedPython[0], parsedPython[1], sessionPref[i].second);
             }
             catch (...)
             {
-                std::cout << "Stream does not exist or has not started" << std::endl;
+                std::cout << sessionPref[i].second << " stream does not exist or has not started" << std::endl;
             }
         }
     }
