@@ -1,5 +1,6 @@
 #exclude the compiled cpp
 
+./.idea
 youtube_archive
 main.py
 *.exc
