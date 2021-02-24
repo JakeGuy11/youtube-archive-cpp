@@ -4,6 +4,7 @@ import sys
 import requests
 import json
 import re
+import time
 from pathlib import Path
 from datetime import date
 from fake_useragent import UserAgent
@@ -21,6 +22,8 @@ try:
         "Upgrade-Insecure-Requests": "1",
         "User-Agent": "Mozilla/5.0 (X11; Linux ppc64le; rv:75.0) Gecko/20100101 Firefox/75.0",
     }
+    # Wait a while so we don't make a bunch of requests immediately and make YouTube suspicious
+    time.sleep(2)
     # Get the source code from the url and pass our fake headers
     req = requests.get(channel_url, headers=fake_header)
     # Convert that source code to a string
@@ -49,7 +52,7 @@ try:
                      ["content"]["sectionListRenderer"]["contents"][0]["itemSectionRenderer"]["contents"][0][
                      "channelFeaturedContentRenderer"]["items"][0]["videoRenderer"]["title"]["runs"][0]["text"])
     # Generate the title of the saved video from the current date and the user passed title
-    return_title = date.today().strftime("%d-%m-%Y") + "-" + re.sub(r'[^a-zA-Z0-9_あ-んア-ン]', '', video_name)
+    return_title = date.today().strftime("%d-%m-%Y-%H:%M") + "-" + sys.argv[2]
     # Print out a formatted return that the c++ can parse
     print(video_url.rstrip() + ";" + return_title + ".ts")
 except:
