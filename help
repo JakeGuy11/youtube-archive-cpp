@@ -9,12 +9,11 @@ Until then, try your best to make all their streams and like, comment and subscr
 
 Queue/Meta information:
     -h, --help                                       Show this help message
-    -a, --add CHANNELURL NICKNAME                    Add a channel to the queue. Follow this by the channel's home page URL and an alphanumeric nickname of choice
-    -r, --remove IDENTIFIER                          Remove a channel. Follow by the channel's nickname OR channel URL
+    -a, --add [CHANNELURL] [NICKNAME]                Add a channel to the queue. Follow this by the channel's home page URL and an alphanumeric nickname of choice
+    -r, --remove [IDENTIFIER]                        Remove a channel. Follow by the channel's nickname OR channel URL
     -l, --list                                       List all channels and corresponding nicknames
 
 To run:
     -s, --start                                      Start the program after all other operations are completed
-    -i, --interval TIME                              Set the interval time in seconds, the time between checking for new livestreams. Default is 30. Must be an integer
-    -t, --temp CHANNELURL NICKNAME                   Add a temporary channel to scan for. This will not be saved for future uses
-    -o, --overwrite                                  Force overwrite local streams within a day. If this option is omitted, later streams will be ignored
+    -i, --interval [TIME]                            Set the interval time in seconds, the time between checking for new livestreams. Default is 30. Must be an integer
+    -t, --temp [CHANNELURL] [NICKNAME]               Add a temporary channel to scan for. This will not be saved for future uses

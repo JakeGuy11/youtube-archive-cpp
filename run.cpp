@@ -22,7 +22,7 @@ std::string prefString = "";
 std::string homeDir = getenv("HOME");
 std::string holoDir = homeDir + "/.holo-dl/";
 std::string holoPref = homeDir + "/.holo-dl/.queue";
-int timeInterval = 5;
+int timeInterval = 30;
 
 std::string parseChannelURL(std::string url)
 {
@@ -234,7 +234,8 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
     std::ofstream outFile(activityFilePath);
     outFile << "active" << std::endl;
     outFile.close();
-    std::string command = "ffmpeg -n -loglevel quiet -i `youtube-dl -f best -g " + youtubeURL + "` " + holoDir + saveName; //-loglevel quiet
+    std::string::size_type pos = 0;
+    std::string command = "ffmpeg -y -loglevel quiet -i `youtube-dl -f best -g " + youtubeURL + "` " + holoDir + saveName; //-loglevel quiet
     //std::cout << command << std::endl;
     system(command.c_str());
     const char *activityFilePathChars = activityFilePath.c_str();
@@ -244,7 +245,7 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
 
 void periodic()
 {
-    std::cout << "\nStarting checks..." << std::endl;
+    std::cout << "Starting checks..." << std::endl;
     for(int i = 0; i < sessionPref.size(); i++)
     {
         if(fileExists(holoDir + "." + sessionPref[i].second))
@@ -254,7 +255,7 @@ void periodic()
         else
         {
             std::cout << sessionPref[i].second + " activity file doesn't exist, checking for stream..." << std::endl;
-            std::string arguments = "./parse_youtube_data.py " + sessionPref[i].first + " " + sessionPref[i].second + " date";
+            std::string arguments = "./parse_youtube_data.py " + sessionPref[i].first;
             //std::cout << arguments << std::endl;
             std::string pythonOut = getCommandOutput(arguments.c_str());
             //std::cout << pythonOut << std::endl;
@@ -271,6 +272,7 @@ void periodic()
             }
         }
     }
+    std::cout << "\n";
 }
 
 int main(int argc, char **argv)
@@ -278,9 +280,7 @@ int main(int argc, char **argv)
     if(argc < 2)
     {
     std::cerr << "Usage: " << std::endl
-        << argv[0] << " --start" << std::endl
-        << argv[0] << " --help" << std::endl
-        << argv[0] << " --list" << std::endl;
+        << argv[0] << " [OPTIONS]" << std::endl;
         return 1;
     }
 
@@ -330,6 +330,7 @@ int main(int argc, char **argv)
     if(run)
     {
         int loopCount = 0;
+        periodic();
         while(true)
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
