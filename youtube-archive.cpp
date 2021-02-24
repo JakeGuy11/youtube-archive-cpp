@@ -1,20 +1,10 @@
 #include<iostream>
-#include<filesystem>
-#include<cstdio>
 #include<fstream>
 #include<vector>
 #include<sstream>
 #include<chrono>
 #include<thread>
-#include<functional>
 #include<future>
-#include <memory>
-#include <stdexcept>
-#include <array>
-
-#include <unistd.h>
-#include <fcntl.h>
-#include <cstring>
 
 //Create a vector of pairs of strings to hold our saved and added download entries
 std::vector<std::pair<std::string,std::string>> sessionQueue;
