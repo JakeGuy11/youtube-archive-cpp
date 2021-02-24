@@ -11,7 +11,7 @@ To minimize the risk of YouTube blocking your computer, it is recommended that y
 Queue/Meta information:
     -h, --help                                       Show this help message
     -a, --add [CHANNELURL] [NICKNAME]                Add a channel to the queue. Follow this by the channel's home page URL and an alphanumeric nickname of choice
-    -r, --remove [IDENTIFIER]                        Remove a channel. Follow by the channel's nickname OR channel URL
+    -r, --remove [IDENTIFIER]                        Remove a channel. Follow by the channel's nickname OR channel ID (characters following /channel/)
     -l, --list                                       List all channels and corresponding nicknames
 
 To run:

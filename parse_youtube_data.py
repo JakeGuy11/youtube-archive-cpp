@@ -6,13 +6,23 @@ import json
 import re
 from pathlib import Path
 from datetime import date
+from fake_useragent import UserAgent
 
 # Generate the channel url from the channel id passed by c++
 channel_id = sys.argv[1]
 channel_url = "https://www.youtube.com/channel/" + channel_id
 try:
-    # Get the source code from the url
-    req = requests.get(channel_url)
+    # Declare some fake headers so YouTube doesn't block us
+    fake_header = {
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
+        "Dnt": "1",
+        "Upgrade-Insecure-Requests": "1",
+        "User-Agent": "Mozilla/5.0 (X11; Linux ppc64le; rv:75.0) Gecko/20100101 Firefox/75.0",
+    }
+    # Get the source code from the url and pass our fake headers
+    req = requests.get(channel_url, headers=fake_header)
     # Convert that source code to a string
     page_data = req.text
 
@@ -39,7 +49,7 @@ try:
                      ["content"]["sectionListRenderer"]["contents"][0]["itemSectionRenderer"]["contents"][0][
                      "channelFeaturedContentRenderer"]["items"][0]["videoRenderer"]["title"]["runs"][0]["text"])
     # Generate the title of the saved video from the current date and the user passed title
-    return_title = date.today().strftime("%d-%m-%Y") + "-" + re.sub(r'[^a-zA-Z0-9_]', '', video_name)
+    return_title = date.today().strftime("%d-%m-%Y") + "-" + re.sub(r'[^a-zA-Z0-9_あ-んア-ン]', '', video_name)
     # Print out a formatted return that the c++ can parse
     print(video_url.rstrip() + ";" + return_title + ".ts")
 except:
