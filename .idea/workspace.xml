@@ -2,14 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b2dc356f-5991-4a2c-a528-87fd8f19abd9" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/holo-dl.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/help" beforeDir="false" afterPath="$PROJECT_DIR$/help" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parse_youtube_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/parse_youtube_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/youtube-archive" beforeDir="false" afterPath="$PROJECT_DIR$/youtube-archive" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,7 +74,10 @@
       <workItem from="1614110373208" duration="661000" />
       <workItem from="1614117024350" duration="9369000" />
       <workItem from="1614127077284" duration="1476000" />
-      <workItem from="1614184216860" duration="1347000" />
+      <workItem from="1614184216860" duration="1592000" />
+      <workItem from="1614186012791" duration="2072000" />
+      <workItem from="1614195099932" duration="7453000" />
+      <workItem from="1614205683985" duration="748000" />
     </task>
     <servers />
   </component>

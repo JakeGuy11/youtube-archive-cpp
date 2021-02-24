@@ -1,6 +1,5 @@
 # Update me later!!!
 
-youtube_archive
-main.py
+bin/*
 *.exc
-.idea
+.idea/*

@@ -4,14 +4,14 @@ I am not responsible for anything you want to do with what you download.
 That said, don't do anything against the creator's wishes or copyrights.
 
 IMPORTANT:
-This application utilizes web scraping, a technique to get data that's in something of a legal grey spot. It's unlikely but a possibility that YouTube will attempt to block your computer from accessing their service. Measures will be taken in future releases to make it safer, so for now, use it at your own risk.
+This application utilizes web scraping, a technique to get data that's in something of a legal grey spot. It's unlikely but still a possibility that YouTube will attempt to block your computer from accessing their service. Measures have been and will continue to be taken in future releases to make it safer. It should be safe at the moment, but still, use it at your own risk.
 
 To minimize the risk of YouTube blocking your computer, it is recommended that you change the interval time to as long as you can. The recommended safe time is 300 seconds.
 
 Queue/Meta information:
     -h, --help                                       Show this help message
     -a, --add [CHANNELURL] [NICKNAME]                Add a channel to the queue. Follow this by the channel's home page URL and an alphanumeric nickname of choice
-    -r, --remove [IDENTIFIER]                        Remove a channel. Follow by the channel's nickname OR channel ID (characters following /channel/)
+    -r, --remove [IDENTIFIER]                        Remove a channel. Follow by the channel's nickname OR channel url
     -l, --list                                       List all channels and corresponding nicknames
 
 To run:
