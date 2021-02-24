@@ -1,5 +1,5 @@
 #exclude the compiled cpp
 
-run
+youtube_archive
 main.py
-.key
+*.exc

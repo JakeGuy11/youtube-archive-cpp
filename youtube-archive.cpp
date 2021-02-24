@@ -20,9 +20,9 @@ std::vector<std::pair<std::string,std::string>> otPref;
 std::vector<std::future<void>> procVector;
 std::string prefString = "";
 std::string homeDir = getenv("HOME");
-std::string holoDir = homeDir + "/.holo-dl/";
-std::string holoPref = homeDir + "/.holo-dl/.queue";
-int timeInterval = 30;
+std::string archiveDir = homeDir + "/.archive-dl/";
+std::string archivePref = homeDir + "/.archive-dl/.queue";
+int timeInterval = 45;
 
 std::string parseChannelURL(std::string url)
 {
@@ -229,13 +229,13 @@ std::string getCommandOutput(const char* cmd)
 void startArchive(std::string youtubeURL, std::string saveName, std::string activityName)
 {
     //std::cout << "savename: " << saveName << std::endl;
-    std::string activityFilePath = holoDir + "." + activityName;
+    std::string activityFilePath = archiveDir + "." + activityName;
     //std::cout << activityFilePath << std::endl;
     std::ofstream outFile(activityFilePath);
     outFile << "active" << std::endl;
     outFile.close();
     std::string::size_type pos = 0;
-    std::string command = "ffmpeg -y -loglevel quiet -i `youtube-dl -f best -g " + youtubeURL + "` " + holoDir + saveName; //-loglevel quiet
+    std::string command = "ffmpeg -y -loglevel quiet -i `youtube-dl -f best -g " + youtubeURL + "` " + archiveDir + saveName; //-loglevel quiet
     //std::cout << command << std::endl;
     system(command.c_str());
     const char *activityFilePathChars = activityFilePath.c_str();
@@ -248,7 +248,7 @@ void periodic()
     std::cout << "Starting checks..." << std::endl;
     for(int i = 0; i < sessionPref.size(); i++)
     {
-        if(fileExists(holoDir + "." + sessionPref[i].second))
+        if(fileExists(archiveDir + "." + sessionPref[i].second))
         {
             std::cout << sessionPref[i].second + " activity file exists, stream is being archived" << std::endl;
         }
@@ -284,7 +284,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    sessionPref = splitIntoVector(readFromFile(holoPref));
+    sessionPref = splitIntoVector(readFromFile(archivePref));
 
     bool run = false;
 
@@ -325,7 +325,7 @@ int main(int argc, char **argv)
         }
 
     }
-    writeToFile(holoPref, saveToString(sessionPref));
+    writeToFile(archivePref, saveToString(sessionPref));
 
     if(run)
     {

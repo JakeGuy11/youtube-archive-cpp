@@ -1,11 +1,12 @@
-Welcome to holo-dl, an application that archives HoloLive Streams!
+Welcome to youtube-archive, an application that archives youtube streams!
 
-Read before using:
-Please do not re-upload the full stream. It's against HoloLive rules and overall not cool.
-If you do, you're taking away views, likes, comments, subscribers and money from the HoloLive members.
-I won't be responsible for what you do with the streams you save, but this is more than just a disclaimer.
-In the future, a like and comment feature will be implemented so that you're not just taking the stream and giving nothing in return.
-Until then, try your best to make all their streams and like, comment and subscribe on your own.
+I am not responsible for anything you want to do with what you download.
+That said, don't do anything against the creator's wishes or copyrights.
+
+IMPORTANT:
+This application utilizes web scraping, a technique to get data that's in something of a legal grey spot. It's unlikely but a possibility that YouTube will attempt to block your computer from accessing their service. Measures will be taken in future releases to make it safer, so for now, use it at your own risk.
+
+To minimize the risk of YouTube blocking your computer, it is recommended that you change the interval time to as long as you can. The recommended safe time is 300 seconds.
 
 Queue/Meta information:
     -h, --help                                       Show this help message
@@ -15,5 +16,5 @@ Queue/Meta information:
 
 To run:
     -s, --start                                      Start the program after all other operations are completed
-    -i, --interval [TIME]                            Set the interval time in seconds, the time between checking for new livestreams. Default is 30. Must be an integer
+    -i, --interval [TIME]                            Set the interval time in seconds, the time between checking for new livestreams. Default is 45. Must be an integer
     -t, --temp [CHANNELURL] [NICKNAME]               Add a temporary channel to scan for. This will not be saved for future uses
