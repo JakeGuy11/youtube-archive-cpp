@@ -8,6 +8,8 @@ This application utilizes web scraping, a technique to get data that's in someth
 
 To minimize the risk of YouTube blocking your computer, it is recommended that you change the interval time to as long as you can. The recommended safe time is 300 seconds.
 
+To uninstall, run /opt/youtube-archive/uninstall.sh as root.
+
 Queue/Meta information:
     -h, --help                                       Show this help message
     -a, --add [CHANNELURL] [NICKNAME]                Add a channel to the queue. Follow this by the channel's home page URL and an alphanumeric nickname of choice
