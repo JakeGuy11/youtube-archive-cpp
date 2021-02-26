@@ -165,7 +165,7 @@ void writeToFile(std::string filePath, std::string stringToWrite)
 void help()
 {
     //Create an infile stream from the file named help
-    std::ifstream helpFile("help");
+    std::ifstream helpFile("/opt/youtube-archive/help");
     //Print the contents of help
     std::cout << helpFile.rdbuf();
 }
@@ -332,7 +332,7 @@ void periodic()
         {
             std::cout << sessionQueue[i].second + " activity file doesn't exist, checking for stream..." << std::endl;
             //Generate the python command, execute it, get the output and parse it
-            std::string arguments = "./parse_youtube_data.py " + sessionQueue[i].first + " " + sessionQueue[i].second;
+            std::string arguments = "/opt/youtube-archive/parse_youtube_data.py " + sessionQueue[i].first + " " + sessionQueue[i].second;
             std::string pythonOut = getCommandOutput(arguments.c_str());
             std::vector<std::string> parsedPython = parsePythonOutput(pythonOut);
             try
@@ -351,7 +351,7 @@ void periodic()
 
 //Main function
 int main(int argc, char **argv)
-{
+{	
     //If there are no extra arguments, print the usage
     if(argc < 2)
     {
