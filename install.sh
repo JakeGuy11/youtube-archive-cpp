@@ -27,8 +27,9 @@ cp ./help /opt/youtube-archive/
 cp ./youtube-archive /usr/bin/
 cp ./youtube-archive.cpp /opt/youtube-archive/
 
-#Ensure the file permissions are correct
+#Ensure the permissions are correct
 chmod +x /usr/bin/youtube-archive
 chmod +x /opt/youtube-archive/parse_youtube_data.py
+chmod -R 777 $USER_HOME/.archive-dl/
 
-echo "Install is complete, you can delete this folder now."
+echo "Install complete. You may now delete this folder."
