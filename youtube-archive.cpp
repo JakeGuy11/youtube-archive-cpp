@@ -307,7 +307,7 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
     outFile << "active" << std::endl;
     outFile.close();
     //Generate and execute the command to download the livestream
-    std::string command = "ffmpeg -y -loglevel quiet -i `youtube-dl -f best -g " + youtubeURL + "` " + archiveDir + saveName;
+    std::string command = "ffmpeg -loglevel -8 -y -i `youtube-dl -f best -g " + youtubeURL + "` " + archiveDir + saveName;
     system(command.c_str());
     //The download is done, remove the activity file
     const char *activityFilePathChars = activityFilePath.c_str();
@@ -332,7 +332,7 @@ void periodic()
         {
             std::cout << sessionQueue[i].second + " activity file doesn't exist, checking for stream..." << std::endl;
             //Generate the python command, execute it, get the output and parse it
-            std::string arguments = "./parse_youtube_data.py " + sessionQueue[i].first + sessionQueue[i].second;
+            std::string arguments = "./parse_youtube_data.py " + sessionQueue[i].first + " " + sessionQueue[i].second;
             std::string pythonOut = getCommandOutput(arguments.c_str());
             std::vector<std::string> parsedPython = parsePythonOutput(pythonOut);
             try
@@ -415,6 +415,7 @@ int main(int argc, char **argv)
     {
         //Create a loop count. It will overall take intervalTime but we don't want to do a huge wait, so we do it in small intervals
         int loopCount = 0;
+        periodic();
         //Until it's cancelled by the user (ctrl+c is the only way for now)
         while(true)
         {
