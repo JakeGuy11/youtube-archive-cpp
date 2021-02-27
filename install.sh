@@ -26,12 +26,14 @@ cp ./parse_youtube_data.py /opt/youtube-archive/
 cp ./help /opt/youtube-archive/
 cp ./youtube-archive /usr/bin/
 cp ./youtube-archive.cpp /opt/youtube-archive/
+cp ./uninstall.sh /opt/youtube-archive/
 
 #Ensure the permissions are correct
 chgrp bin /usr/bin/youtube-archive
 chmod 755 /usr/bin/youtube-archive
 chgrp bin /opt/youtube-archive/parse_youtube_data.py
 chmod 755 /opt/youtube-archive/parse_youtube_data.py
+chmod 755 /opt/youtube-archive/uninstall.sh
 chmod -R 777 $USER_HOME/.archive-dl/
 
 echo "Install complete. You may now delete this folder."
