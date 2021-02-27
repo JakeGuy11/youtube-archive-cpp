@@ -33,15 +33,16 @@ pip show requests
 # Installation
 To install on UNIX:
 1. Download the latest release
-2. Extract it
+2. Extract it into a new folder
 ```bash
-cd ~/Downloads
-tar -xvf youtube-archive-X.X.X.tar.gz
+cd ~/Downloads/
+mkdir ./youtube-archive-extracted/
+tar -xpvzf ./youtube-archive-X.X.X.tar.gz -C ./youtube-archive-extracted/
 ```
 
 3. Add the executable permission to the install script
 ```bash
-cd youtube-archive-X.X.X
+cd ./youtube-archive-extracted/
 chmod +x ./install.sh
 ```
 
@@ -53,7 +54,7 @@ sudo ./install.sh
 5. Remove the install folder
 ```bash
 cd ../
-rm -r youtube-archive-X.X.X
+rm -r ./youtube-archive-extracted/
 ```
 
 6. youtube-archive is ready to be used!\
