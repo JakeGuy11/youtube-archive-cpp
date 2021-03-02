@@ -6,6 +6,7 @@
 #include<thread>
 #include<future>
 #include<algorithm>
+#include<cstring>
 
 //Create a vector of pairs of strings to hold our saved and added download entries
 std::vector<std::pair<std::string,std::string>> sessionQueue;
@@ -316,9 +317,9 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
     if (finalFormat != "")
     {
         std::cout << "Finished downloading " << activityName << " stream." << std::endl << "Converting to desired format " << finalFormat << "..." << std::endl;
-        std::string convertCommand = "ffmpeg -loglevel -8 -y -i " + archiveDir + saveName + " " + archiveDir + saveName.substr(0, saveName.find(".ts")) + "." + finalFormat;
+        std::string convertCommand = "ffmpeg -loglevel -8 -y -i " + archiveDir + saveName + ".ts " + archiveDir + saveName.substr(0, saveName.find(".ts")) + "." + finalFormat;
         system(convertCommand.c_str());
-        std::cout << "Removing original " << activityName << " stream" << std::endl;
+        std::cout << "Removing original " << activityName << " stream..." << std::endl;
         std::string removeCommand = "rm " + archiveDir + saveName + ".ts";
         system(removeCommand.c_str());
     }
@@ -360,6 +361,31 @@ void periodic()
         }
     }
     std::cout << "\n";
+}
+
+void periodicCaller()
+{
+    //Create a loop count. It will overall take intervalTime but we don't want to do a huge wait, so we do it in small intervals
+    int loopCount = 0;
+    periodic();
+    //Until it's cancelled by the user (ctrl+c is the only way for now)
+    while(true)
+    {
+        //If the time in milliseconds divided by the periodic wait time is larger than our loops
+        if(loopCount >= (timeInterval * 1000)/50)
+        {
+            //Do the periodic, set the loop count to 0
+            periodic();
+            loopCount = 0;
+        }
+        else
+        {
+        loopCount++;
+        }
+        
+        //Wait 50 milliseconds
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    }
 }
 
 //Main function
@@ -429,26 +455,9 @@ int main(int argc, char **argv)
     //If we want to run the actual archiver
     if(run)
     {
-        //Create a loop count. It will overall take intervalTime but we don't want to do a huge wait, so we do it in small intervals
-        int loopCount = 0;
-        periodic();
-        //Until it's cancelled by the user (ctrl+c is the only way for now)
-        while(true)
-        {
-            //If the time in milliseconds divided by the periodic wait time is larger than our loops
-            if(loopCount >= (timeInterval * 1000)/50)
-            {
-                //Do the periodic, set the loop count to 0
-                periodic();
-                loopCount = 0;
-            }
-            else
-            {
-            loopCount++;
-            }
-            //Wait 50 milliseconds
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
-        }
+        //std::future<void> periodicProc = std::async(periodicCaller);
+        periodicCaller();
+        //while(true) { }
     }
 
 }
