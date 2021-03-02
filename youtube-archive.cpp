@@ -25,7 +25,9 @@ int timeInterval = 45;
 //Set the default run state to do not run
 bool run = false;
 //Set the default video format
-std::string finalFormat = "";
+std::string finalFormat = "ts";
+//Set the final destination of the streams
+std::string moveLocation = "";
 
 //Create a method that returns the channel id from its url
 std::string parseChannelURL(std::string url)
@@ -314,14 +316,42 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
     //Generate and execute the command to download the livestream
     std::string dlCommand = "ffmpeg -loglevel -8 -y -i `youtube-dl -f best -g " + youtubeURL + "` " + archiveDir + saveName + ".ts";
     system(dlCommand.c_str());
-    if (finalFormat != "")
+    //Re-encode the video if the option is enabled
+    if (finalFormat != "ts")
     {
-        std::cout << "Finished downloading " << activityName << " stream." << std::endl << "Converting to desired format " << finalFormat << "..." << std::endl;
-        std::string convertCommand = "ffmpeg -loglevel -8 -y -i " + archiveDir + saveName + ".ts " + archiveDir + saveName.substr(0, saveName.find(".ts")) + "." + finalFormat;
-        system(convertCommand.c_str());
-        std::cout << "Removing original " << activityName << " stream..." << std::endl;
-        std::string removeCommand = "rm " + archiveDir + saveName + ".ts";
-        system(removeCommand.c_str());
+        try
+        {
+            std::cout << "Finished downloading " << activityName << " stream. Converting to desired format " << finalFormat << "..." << std::endl;
+            //Generate the re-encoding command
+            std::string convertCommand = "ffmpeg -loglevel -8 -y -i " + archiveDir + saveName + ".ts " + archiveDir + saveName + "." + finalFormat; //.substr(0, saveName.find(".ts"))
+            //Execute the re-encoding command
+            system(convertCommand.c_str());
+            std::cout << "Removing original " << activityName << " stream..." << std::endl;
+            //Generate the removal command
+            std::string removeCommand = "rm " + archiveDir + saveName + ".ts";
+            //Execute the removal command
+            system(removeCommand.c_str());
+        }
+        catch (...)
+        {
+            std::cout << "Error while converting to " << finalFormat << " (is the target format supported by ffmpeg?)" << std::endl;
+        }
+    }
+    //Move the video if the option is enabled
+    if(moveLocation != "")
+    {
+        try
+        {
+            std::cout << "Moving to location " << moveLocation << std::endl;
+            //Generate the move command
+            std::string moveCommand = "mv " + archiveDir + saveName + "." + finalFormat + " " + moveLocation;
+            //Execute the move command
+            system(moveCommand.c_str());
+        }
+        catch (...)
+        {
+            std::cout << "Error while moving stream (is the target location a directory?)" << std::endl;
+        }
     }
     //The download is done, remove the activity file
     const char *activityFilePathChars = activityFilePath.c_str();
@@ -416,7 +446,7 @@ int main(int argc, char **argv)
             }
             catch (...)
             {
-            std::cout << "The channel URL you've entered is not valid. Please retry." << std::endl;
+            std::cout << "The information you've entered is not valid. Please retry." << std::endl;
             }
         }else if (std::string(argv[i]) == "-r" || std::string(argv[i]) == "--remove") {
             //Remove the entry
@@ -441,12 +471,14 @@ int main(int argc, char **argv)
             }
             catch (...)
             {
-            std::cout << "The channel URL you've entered is not valid. Please retry." << std::endl;
+            std::cout << "The information you've entered is not valid. Please retry." << std::endl;
             }
         }else if (std::string(argv[i]) == "-f" || std::string(argv[i]) == "--format") {
-	    //Change the format of the video
-	    finalFormat = argv[i+1];
-	}
+            //Change the format of the video
+            finalFormat = argv[i+1];
+        }else if (std::string(argv[i]) == "-m" || std::string(argv[i]) == "--move") {
+            moveLocation = argv[i+1];
+        }
 
     }
     //All the options have been completed except for run, so write the final saved queue to file
@@ -455,9 +487,7 @@ int main(int argc, char **argv)
     //If we want to run the actual archiver
     if(run)
     {
-        //std::future<void> periodicProc = std::async(periodicCaller);
         periodicCaller();
-        //while(true) { }
     }
 
 }
