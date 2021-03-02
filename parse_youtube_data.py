@@ -76,7 +76,9 @@ try:
                      "channelFeaturedContentRenderer"]["items"][0]["videoRenderer"]["title"]["runs"][0]["text"])
     # Generate the title of the saved video from the current date and the user passed title
     return_title = date.today().strftime("%d-%m-%Y") + "-" + sys.argv[2]
+    # Generate a formatted return string
+    return_string = video_url.rstrip() + ";" + return_title
     # Print out a formatted return that the c++ can parse
-    print(video_url.rstrip() + ";" + return_title + ".ts")
+    print(return_string)
 except:
     print("json error")

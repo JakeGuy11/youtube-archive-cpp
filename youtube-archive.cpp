@@ -5,6 +5,7 @@
 #include<chrono>
 #include<thread>
 #include<future>
+#include<algorithm>
 
 //Create a vector of pairs of strings to hold our saved and added download entries
 std::vector<std::pair<std::string,std::string>> sessionQueue;
@@ -22,6 +23,8 @@ std::string archiveQueue = archiveDir + ".queue";
 int timeInterval = 45;
 //Set the default run state to do not run
 bool run = false;
+//Set the default video format
+std::string finalFormat = "";
 
 //Create a method that returns the channel id from its url
 std::string parseChannelURL(std::string url)
@@ -295,6 +298,7 @@ std::string getCommandOutput(const char* cmd)
     while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
         result += buffer.data();
     }
+    result.erase(std::remove(result.begin(), result.end(), '\n'), result.end());
     return result;
 }
 
@@ -307,8 +311,17 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
     outFile << "active" << std::endl;
     outFile.close();
     //Generate and execute the command to download the livestream
-    std::string command = "ffmpeg -loglevel -8 -y -i `youtube-dl -f best -g " + youtubeURL + "` " + archiveDir + saveName;
-    system(command.c_str());
+    std::string dlCommand = "ffmpeg -loglevel -8 -y -i `youtube-dl -f best -g " + youtubeURL + "` " + archiveDir + saveName + ".ts";
+    system(dlCommand.c_str());
+    if (finalFormat != "")
+    {
+        std::cout << "Finished downloading " << activityName << " stream." << std::endl << "Converting to desired format " << finalFormat << "..." << std::endl;
+        std::string convertCommand = "ffmpeg -loglevel -8 -y -i " + archiveDir + saveName + " " + archiveDir + saveName.substr(0, saveName.find(".ts")) + "." + finalFormat;
+        system(convertCommand.c_str());
+        std::cout << "Removing original " << activityName << " stream" << std::endl;
+        std::string removeCommand = "rm " + archiveDir + saveName + ".ts";
+        system(removeCommand.c_str());
+    }
     //The download is done, remove the activity file
     const char *activityFilePathChars = activityFilePath.c_str();
     remove(activityFilePathChars);
@@ -404,7 +417,10 @@ int main(int argc, char **argv)
             {
             std::cout << "The channel URL you've entered is not valid. Please retry." << std::endl;
             }
-        }
+        }else if (std::string(argv[i]) == "-f" || std::string(argv[i]) == "--format") {
+	    //Change the format of the video
+	    finalFormat = argv[i+1];
+	}
 
     }
     //All the options have been completed except for run, so write the final saved queue to file
