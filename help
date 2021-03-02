@@ -29,3 +29,4 @@ Run options:
     -i, --interval [TIME]                            Set the interval time in seconds, the time between checking for new livestreams. Default is 45. Must be an integer
     -t, --temp [CHANNELURL] [NICKNAME]               Add a temporary channel to scan for. This will not be saved for future uses
     -f, --format [VIDEOFORMAT]                       Convert the downloaded video to the entered format. All formats supported by FFMPEG are supported by this program as well.
+    -m, --move [LOCATION]                            Move the final video to the specified directory. The characters '~/' at the start of the path will indicate the home directory.
