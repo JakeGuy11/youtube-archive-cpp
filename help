@@ -1,3 +1,11 @@
+TEMPORARY NOTE:
+After some more testing, a new problem was revealed. Depending on the specs of your computer, downloading too many streams at once can corrupt small sections of the video and, in extreme cases, even cause the program to crash.
+For now, it is recommended that you don't download more than one stream at a time if you're using a bad-medium laptop or a bad PC. If you have a good/gaming laptop or a medium/good/gaming PC, it's recommended that you don't download more than three streams at a time.
+For reference, on a ThinkPad T530 (intel i7 @ 2.9GHz, 16GB DDR3), two streams could be downloaded at once with a very small amout of corruption.
+
+If you want to maxumize preformance while downloading more than the reccomended amount of streams, you should not change the format (i.e. omit the -f option), as this takes up a lot of system resources. A fix will be provided soon.
+
+
 Welcome to youtube-archive, an application that archives youtube streams!
 
 I am not responsible for anything you want to do with what you download.
@@ -10,13 +18,14 @@ To minimize the risk of YouTube blocking your computer, it is recommended that y
 
 To uninstall, run /opt/youtube-archive/uninstall.sh as root.
 
-Queue/Meta information:
+Queue/Meta options:
     -h, --help                                       Show this help message
     -a, --add [CHANNELURL] [NICKNAME]                Add a channel to the queue. Follow this by the channel's home page URL and an alphanumeric nickname of choice
     -r, --remove [IDENTIFIER]                        Remove a channel. Follow by the channel's nickname OR channel url
     -l, --list                                       List all channels and corresponding nicknames
 
-To run:
+Run options:
     -s, --start                                      Start the program after all other operations are completed
     -i, --interval [TIME]                            Set the interval time in seconds, the time between checking for new livestreams. Default is 45. Must be an integer
     -t, --temp [CHANNELURL] [NICKNAME]               Add a temporary channel to scan for. This will not be saved for future uses
+    -f, --format [VIDEOFORMAT]                       Convert the downloaded video to the entered format. All formats supported by FFMPEG are supported by this program as well.
