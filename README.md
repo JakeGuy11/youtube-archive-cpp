@@ -1,3 +1,10 @@
+# TEMPORARY NOTE
+After some more testing, a new problem was revealed. Depending on the specs of your computer, downloading too many streams at once can corrupt small sections of the video and, in extreme cases, even cause the program to crash.
+For now, it is recommended that you don't download more than one stream at a time if you're using a bad-medium laptop or a bad PC. If you have a good/gaming laptop or a medium/good/gaming PC, it's recommended that you don't download more than three streams at a time.
+For reference, on a ThinkPad T530 (intel i7 @ 2.9GHz, 16GB DDR3), two streams could be downloaded at once with a very small amout of corruption.
+
+If you want to maxumize preformance while downloading more than the reccomended amount of streams, you should not change the format (i.e. omit the -f option), as this takes up a lot of system resources. A fix will be added in the next release.
+
 # Contents
 - [Dependencies](#Dependencies)
 - [Installation](#Installation)
