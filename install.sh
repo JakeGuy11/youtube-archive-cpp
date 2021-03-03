@@ -16,9 +16,9 @@ touch "$USER_HOME/.archive-dl/.queue"
 
 #Try to compile the c++ with gcc, and if that doesn't work, use g++
 {
-gcc -pthread -lstdc++ -g -o youtube-archive youtube-archive.cpp
+gcc -fconcepts-ts -pthread -lstdc++ -g -o youtube-archive youtube-archive.cpp
 } || {
-g++ -pthread youtube-archive.cpp -g -o youtube-archive
+g++ -pthread -fconcepts-ts -g -o youtube-archive youtube-archive.cpp
 }
 
 #Move all the files that need to be moved
