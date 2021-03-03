@@ -183,7 +183,7 @@ void help()
     //Create an infile stream from the file named help
     std::ifstream helpFile("/opt/youtube-archive/help");
     //Print the contents of help
-    std::cout << helpFile.rdbuf() << std::endl;
+    print(-1, helpFile.rdbuf());
 }
 
 //Add an entry to the queue
@@ -235,7 +235,7 @@ void list()
     if(sessionQueue.empty() && otQueue.empty())
     {
         //Print that they're both empty
-        std::cout << "Nothing is in the queue" << std::endl;
+        print(-1, "Nothing is in the queue");
     }
     //If only the one time queue is empty
     else if(otQueue.empty())
@@ -244,7 +244,7 @@ void list()
         for(std::pair<std::string,std::string> currentPair : sessionQueue)
             {
                 //Print the nickname then the channel id
-                std::cout << currentPair.second << ", " << currentPair.first << std::endl;
+                print(-1, currentPair.first + ", " + currentPair.second);
             }
     }
     //If only the session queue is empty
@@ -254,23 +254,23 @@ void list()
         for(std::pair<std::string,std::string> currentPair : otQueue)
         {
             //Print the nickname then the channel id
-            std::cout << currentPair.second << ", " << currentPair.first << std::endl;
+            print(-1, currentPair.first + ", " + currentPair.second);
         }
     }
     //Neither are empty
     else
     {
         //Print all the saved queue first
-        std::cout << "Saved queue: " << std::endl;
+        print(-1, "Saved queue: ");
         for(std::pair<std::string,std::string> currentPair : sessionQueue)
         {
-            std::cout << currentPair.first << ", " << currentPair.second << std::endl;
+            print(-1, currentPair.first + ", " + currentPair.second);
         }
         //Now print all the temporary queue
-        std::cout << "Temporary queue: " << std::endl;
+        print(-1, "Temporary queue: ");
         for(std::pair<std::string,std::string> currentPair : otQueue)
         {
-            std::cout << currentPair.first << ", " << currentPair.second << std::endl;
+            print(-1, currentPair.first + ", " + currentPair.second);
         }
     }
 }
@@ -279,7 +279,7 @@ void list()
 void setInterval(int newIntervalTime)
 {
     //If it's less than 1, don't let it be set
-    if(newIntervalTime < 1) std::cout << "Interval time is too low. Please enter an integer value greater than zero." << std::endl;
+    if(newIntervalTime < 1) print(-1, "Interval time is too low. Please enter an integer value greater than zero.");
     //It's not less than 1, set the interval time
     else timeInterval = newIntervalTime;
 }
@@ -331,12 +331,12 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
     {
         try
         {
-            std::cout << "Finished downloading " << activityName << " stream. Converting to desired format " << finalFormat << "..." << std::endl;
+            print(0, "Finished downloading " + activityName + " stream. Converting to desired format " + finalFormat + "...");
             //Generate the re-encoding command
             std::string convertCommand = "ffmpeg -loglevel -8 -y -i " + archiveDir + saveName + ".ts " + archiveDir + saveName + "." + finalFormat; //.substr(0, saveName.find(".ts"))
             //Execute the re-encoding command
             system(convertCommand.c_str());
-            std::cout << "Removing original " << activityName << " stream..." << std::endl;
+            print(0, "Removing original " + activityName + " stream...");
             //Generate the removal command
             std::string removeCommand = "rm " + archiveDir + saveName + ".ts";
             //Execute the removal command
@@ -344,7 +344,7 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
         }
         catch (...)
         {
-            std::cout << "Error while converting to " << finalFormat << " (is the target format supported by ffmpeg?)" << std::endl;
+            print(0, "Error while converting to " + finalFormat + " (is the target format supported by ffmpeg?)");
         }
     }
     //Move the video if the option is enabled
@@ -352,7 +352,7 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
     {
         try
         {
-            std::cout << "Moving to location " << moveLocation << std::endl;
+            print(0, "Moving to location " + moveLocation);
             //Generate the move command
             std::string moveCommand = "mv " + archiveDir + saveName + "." + finalFormat + " " + moveLocation;
             //Execute the move command
@@ -360,31 +360,31 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
         }
         catch (...)
         {
-            std::cout << "Error while moving stream (is the target location a directory?)" << std::endl;
+            print(-1, "Error while moving stream (is the target location a directory?)");
         }
     }
     //The download is done, remove the activity file
     const char *activityFilePathChars = activityFilePath.c_str();
     remove(activityFilePathChars);
-    std::cout << activityName << " stream ended or cancelled" << std::endl;
+    print(0, activityName + " stream ended or cancelled");
 }
 
 //Do everything we need to do every so often
 void periodic()
 {
-    std::cout << "Starting checks..." << std::endl;
+    print(0, "Starting checks...");
     //For every element of the saved queue
     for(int i = 0; i < sessionQueue.size(); i++)
     {
         //If the activity file exists, the stream is being downloaded so do nothing
         if(fileExists(archiveDir + "." + sessionQueue[i].second))
         {
-            std::cout << sessionQueue[i].second + " activity file exists, stream is being archived" << std::endl;
+            print(0, sessionQueue[i].second + " activity file exists, stream is being archived");
         }
         //The activity file doesn't exist, so check if anything needs to be downloaded
         else
         {
-            std::cout << sessionQueue[i].second + " activity file doesn't exist, checking for stream..." << std::endl;
+            print(0, sessionQueue[i].second + " activity file doesn't exist, checking for stream...");
             //Generate the python command, execute it, get the output and parse it
             std::string arguments = "/opt/youtube-archive/parse_youtube_data.py " + sessionQueue[i].first + " " + sessionQueue[i].second;
             std::string pythonOut = getCommandOutput(arguments.c_str());
@@ -396,11 +396,11 @@ void periodic()
             }
             catch (...)
             {
-                std::cout << sessionQueue[i].second << " stream does not exist or has not started" << std::endl;
+                print(0, sessionQueue[i].second + " stream does not exist or has not started");
             }
         }
     }
-    std::cout << "\n";
+    print(0, "");
 }
 
 void periodicCaller()
@@ -456,7 +456,7 @@ int main(int argc, char **argv)
             }
             catch (...)
             {
-            std::cout << "The information you've entered is not valid. Please retry." << std::endl;
+            print(-1, "The information you've entered is not valid. Please retry.");
             }
         }else if (std::string(argv[i]) == "-r" || std::string(argv[i]) == "--remove") {
             //Remove the entry
@@ -481,17 +481,16 @@ int main(int argc, char **argv)
             }
             catch (...)
             {
-            std::cout << "The information you've entered is not valid. Please retry." << std::endl;
+            print(-1, "The information you've entered is not valid. Please retry.");
             }
         }else if (std::string(argv[i]) == "-f" || std::string(argv[i]) == "--format") {
             //Change the format of the video
             finalFormat = argv[i+1];
         }else if (std::string(argv[i]) == "-m" || std::string(argv[i]) == "--move") {
             moveLocation = argv[i+1];
-        }else if (std::string(argv[i]) == "-v" || std::string(argv[i]) == "--verbose") {
-            printLvl = 1;
-        }else if (std::string(argv[i]) == "-q" || std::string(argv[i]) == "--quiet") {
-            printLvl = -1;
+        }else if (std::string(argv[i]) == "-p" || std::string(argv[i]) == "--print-level") {
+            std::string tempPrintLvl = argv[i+1];
+            printLvl = std::stoi(tempPrintLvl);
         }
 
     }
