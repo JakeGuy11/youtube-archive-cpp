@@ -28,6 +28,16 @@ bool run = false;
 std::string finalFormat = "ts";
 //Set the final destination of the streams
 std::string moveLocation = "";
+//Set the default print level to 0. -n is quiet, +1 is debug
+int printLvl = 0;
+
+void print(int level, auto msg)
+{
+    if(level <= printLvl)
+    {
+        std::cout << msg << std::endl;
+    }
+}
 
 //Create a method that returns the channel id from its url
 std::string parseChannelURL(std::string url)
@@ -173,7 +183,7 @@ void help()
     //Create an infile stream from the file named help
     std::ifstream helpFile("/opt/youtube-archive/help");
     //Print the contents of help
-    std::cout << helpFile.rdbuf();
+    std::cout << helpFile.rdbuf() << std::endl;
 }
 
 //Add an entry to the queue
@@ -478,9 +488,14 @@ int main(int argc, char **argv)
             finalFormat = argv[i+1];
         }else if (std::string(argv[i]) == "-m" || std::string(argv[i]) == "--move") {
             moveLocation = argv[i+1];
+        }else if (std::string(argv[i]) == "-v" || std::string(argv[i]) == "--verbose") {
+            printLvl = 1;
+        }else if (std::string(argv[i]) == "-q" || std::string(argv[i]) == "--quiet") {
+            printLvl = -1;
         }
 
     }
+    
     //All the options have been completed except for run, so write the final saved queue to file
     writeToFile(archiveQueue, saveToString(sessionQueue));
 
