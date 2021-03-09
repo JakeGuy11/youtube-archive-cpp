@@ -68,9 +68,9 @@ rm -r ./youtube-archive-extracted/
 ```
 
 6. youtube-archive is ready to be used!\
-\
+
 ## Uninstallation/Updates
-To uninstall the program, run `sudo /opt/youtube-archive/uninstall.sh`. Currently, the only way to update is by uninstalling and reinstalling.\
+To uninstall the program, run `sudo /opt/youtube-archive/uninstall.sh`. Currently, the only way to update is by uninstalling and reinstalling.
 
 No windows or mac packages are officially available yet.
 
