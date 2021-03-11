@@ -5,9 +5,6 @@ For reference, on a ThinkPad T530 (intel i7 @ 2.9GHz, 16GB DDR3), two streams co
 
 If you want to maxumize preformance while downloading more than the reccomended amount of streams, you should not change the format (i.e. omit the -f option), as this takes up a lot of system resources. A fix will be added in the next release.
 
-# BIGGER TEMPORARY NOTE (PLEASE READ ME)
-*At the moment, there is a problem with youtube-dl (on my end). Development will be slow/stopped until a solution can be found, but I am working towards a solution. Please feel free to make a branch or pull request and add your own code in the mean time, but I will not be able to test it.*
-
 # Contents
 - [Dependencies](#Dependencies)
 - [Installation](#Installation)
