@@ -217,6 +217,7 @@ void add(std::string channelId, std::string nickname)
 //Remove an entry from the queue
 void removeEntry(std::string remArg)
 {
+    bool entryRemoved = false;
     print(1, "Removing entry with id " + remArg);
     //Create a blank string that'll hold the removal identifier
     std::string removeId = "";
@@ -235,6 +236,7 @@ void removeEntry(std::string remArg)
             //If the channel id of this element matches the one that should be removed, remove it
             if(sessionQueue[i].first == removeId){
                 print(1, "Entry matches argument, removing it");
+                entryRemoved = true;
                 sessionQueue.erase(sessionQueue.begin()+i);
             }
             else
@@ -256,6 +258,7 @@ void removeEntry(std::string remArg)
             //If the name in this element of the vector matches the removal id, remove the element
             if(sessionQueue[i].second == removeId){
                 print(1, "Entry matches argument, removing it");
+                entryRemoved = true;
                 sessionQueue.erase(sessionQueue.begin()+i);
             }
             else
@@ -265,6 +268,7 @@ void removeEntry(std::string remArg)
         }
     }
 
+    if(!entryRemoved) print (0, "Identifier not found, nothing removed");
 }
 
 //List everything in the temporary queue and the saved queue
