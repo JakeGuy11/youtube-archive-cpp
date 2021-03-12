@@ -53,10 +53,10 @@ try:
     page_data = req.text
 
     # We know we'll need line 20, so save it as a separate string
-    needed_line = page_data.splitlines()[19]
+    # needed_line = page_data.splitlines()[19]
 
     # We know the preceding and proceeding characters around the json we need, so use them to isolate the json
-    needed_json = needed_line.split("ytInitialData = ")[1]
+    needed_json = page_data.split("ytInitialData = ")[1]
     json_string = needed_json.split(";</script>")[0].rstrip()
 except:
     print("network error")
