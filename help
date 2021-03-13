@@ -20,14 +20,14 @@ To uninstall, run /opt/youtube-archive/uninstall.sh as root.
 
 Queue options:
     -h, --help                                       Show this help message
-    -a, --add [CHANNELURL] [NICKNAME]                Add a channel to the queue. Follow this by the channel's home page URL and an alphanumeric nickname of choice
-    -r, --remove [IDENTIFIER]                        Remove a channel. Follow by the channel's nickname OR channel url
+    -a, --add <CHANNELURL> <NICKNAME>                Add a channel to the queue. Follow this by the channel's home page URL and an alphanumeric nickname of choice
+    -r, --remove <IDENTIFIER>                        Remove a channel. Follow by the channel's nickname OR channel url
     -l, --list                                       List all channels and corresponding nicknames
 
 Run options:
     -s, --start                                      Start the program after all other operations are completed
-    -i, --interval [TIME]                            Set the interval time in seconds, the time between checking for new livestreams. Default is 45. Must be an integer
-    -t, --temp [CHANNELURL] [NICKNAME]               Add a temporary channel to scan for. This will not be saved for future uses
-    -f, --format [VIDEOFORMAT]                       Convert the downloaded video to the entered format. All formats supported by FFMPEG are supported by this program as well.
-    -m, --move [LOCATION]                            Move the final video to the specified directory. The characters '~/' at the start of the path will indicate the home directory.
-    -p, --print-level [LEVEL]                        Change the amount of printing the program does. -1 is quiet (errors only) and 1 is debug mode(not reccomended). Default is 0.
+    -i, --interval <TIME>                            Set the interval time in seconds, the time between checking for new livestreams. Default is 45. Must be an integer
+    -t, --temp <CHANNELURL> <NICKNAME>               Add a temporary channel to scan for. This will not be saved for future uses
+    -f, --format <VIDEOFORMAT>                       Convert the downloaded video to the entered format. All formats supported by FFMPEG are supported by this program as well.
+    -m, --move <LOCATION>                            Move the final video to the specified directory. The characters '~/' at the start of the path will indicate the home directory.
+    -p, --print-level <LEVEL>                        Change the amount of printing the program does. -1 is quiet (errors only) and 1 is debug mode(not reccomended). Default is 0.
