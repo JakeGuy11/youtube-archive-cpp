@@ -31,3 +31,4 @@ Run options:
     -f, --format <VIDEOFORMAT>                       Convert the downloaded video to the entered format. All formats supported by FFMPEG are supported by this program as well.
     -m, --move <LOCATION>                            Move the final video to the specified directory. The characters '~/' at the start of the path will indicate the home directory.
     -p, --print-level <LEVEL>                        Change the amount of printing the program does. -1 is quiet (errors only) and 1 is debug mode(not reccomended). Default is 0.
+    -q, --quality-args <ARGS>                        Define custom quality arguments. Default is worst. See README.md for more information.
