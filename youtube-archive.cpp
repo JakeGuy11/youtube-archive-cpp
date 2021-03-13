@@ -30,12 +30,19 @@ std::string finalFormat = "ts";
 std::string moveLocation = "";
 //Set the default print level to 0. -n is quiet, +1 is debug
 int printLvl = 0;
+//Create a default download quality string
+std::string qualityArgs = "worst";
 
 void print(int level, auto msg)
 {
+    std::string prefix = "";
+
+    if(level == -1) prefix = "[ERROR]: ";
+    else if(level == 1) prefix = "[DEBUG]: ";
+
     if(level <= printLvl)
     {
-        std::cout << msg << std::endl;
+        std::cout << prefix << msg << std::endl;
     }
 }
 
@@ -279,7 +286,7 @@ void list()
     if(sessionQueue.empty() && otQueue.empty())
     {
         //Print that they're both empty
-        print(-1, "Nothing is in the queue");
+        print(0, "Nothing is in the queue");
     }
     //If only the one time queue is empty
     else if(otQueue.empty())
@@ -289,7 +296,7 @@ void list()
         for(std::pair<std::string,std::string> currentPair : sessionQueue)
             {
                 //Print the nickname then the channel id
-                print(-1, currentPair.first + ", " + currentPair.second);
+                print(0, currentPair.first + ", " + currentPair.second);
             }
     }
     //If only the session queue is empty
@@ -300,7 +307,7 @@ void list()
         for(std::pair<std::string,std::string> currentPair : otQueue)
         {
             //Print the nickname then the channel id
-            print(-1, currentPair.first + ", " + currentPair.second);
+            print(0, currentPair.first + ", " + currentPair.second);
         }
     }
     //Neither are empty
@@ -308,16 +315,16 @@ void list()
     {
         print(1, "Both queues contain elements, printing both");
         //Print all the saved queue first
-        print(-1, "Saved queue: ");
+        print(0, "Saved queue: ");
         for(std::pair<std::string,std::string> currentPair : sessionQueue)
         {
-            print(-1, currentPair.first + ", " + currentPair.second);
+            print(0, currentPair.first + ", " + currentPair.second);
         }
         //Now print all the temporary queue
-        print(-1, "Temporary queue: ");
+        print(0, "Temporary queue: ");
         for(std::pair<std::string,std::string> currentPair : otQueue)
         {
-            print(-1, currentPair.first + ", " + currentPair.second);
+            print(0, currentPair.first + ", " + currentPair.second);
         }
     }
 }
@@ -383,6 +390,7 @@ std::string getCommandOutput(const char* cmd)
 void startArchive(std::string youtubeURL, std::string saveName, std::string activityName)
 {
     print(1, "Starting archive of " + activityName);
+    print(1, "YouTube URL to download: " + youtubeURL);
     //Create the activity file, a file that will indicate that a stream is being archived
     std::string activityFilePath = archiveDir + "." + activityName;
     print(1, "Activity file path and name: " + activityFilePath);
@@ -390,7 +398,7 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
     outFile << "active" << std::endl;
     outFile.close();
     //Generate and execute the command to download the livestream
-    std::string dlCommand = "ffmpeg -loglevel -8 -y -i `youtube-dl -f best -g " + youtubeURL + "` " + archiveDir + saveName + ".ts";
+    std::string dlCommand = "ffmpeg -loglevel -8 -y -i `youtube-dl -f best -g " + youtubeURL + "` " + archiveDir + saveName + ".ts"; // To fix download persistence error, try adding "--abort-on-unavailable-fragment"
     print(1, "Download command for " + activityName + ": " + dlCommand);
     system(dlCommand.c_str());
     //Re-encode the video if the option is enabled
@@ -465,9 +473,12 @@ void periodic()
             print(1, "Generated python command: " + arguments);
             std::string pythonOut = getCommandOutput(arguments.c_str());
             print(1, "Python output: " + pythonOut);
-            std::vector<std::string> parsedPython = parsePythonOutput(pythonOut);
             try
             {
+                print(1, "Parsing python output...");
+                std::vector<std::string> parsedPython = parsePythonOutput(pythonOut);
+                print(1, "Parsed python output");
+                if(parsedPython.size() < 2) throw (1);
                 print(1, "Adding process asynchronously: startArchive with arguments " + parsedPython[0] + ", " + parsedPython[1] + ", " + sessionQueue[i].second); 
                 //Start the archive asynchronously
                 procVector.push_back(std::async(startArchive, parsedPython[0], parsedPython[1], sessionQueue[i].second));
@@ -479,6 +490,20 @@ void periodic()
         }
     }
     print(0, "");
+}
+
+void parseQArgs(std::string qualityString)
+{
+
+    std::stringstream tempStream(qualityString);
+    std::vector<std::string> qualityArgumentVector;
+    std::vector<std::pair<std::string,std::string>> parsedArgumentVector;
+    std::string foundString = "";
+
+    //This will loop until the end of the string and will add foundString to the vector every time it finds the regex
+    while (std::getline(tempStream, foundString, ',')) {
+        qualityArgumentVector.push_back(foundString);
+    }
 }
 
 void periodicCaller()
@@ -599,6 +624,8 @@ int main(int argc, char **argv)
             //Change the move location
             moveLocation = argv[i+1];
             print(1, "Set move location to " + moveLocation);
+        }else if (std::string(argv[i]) == "-q" || std::string(argv[i]) == "--quality-args") {
+            //parseQArgs(std::string(argv[i+1]));
         }
 
     }
