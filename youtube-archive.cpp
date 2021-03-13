@@ -25,7 +25,7 @@ int timeInterval = 45;
 //Set the default run state to do not run
 bool run = false;
 //Set the default video format
-std::string finalFormat = "ts";
+std::string finalFormat = "mp4";
 //Set the final destination of the streams
 std::string moveLocation = "";
 //Set the default print level to 0. -n is quiet, +1 is debug
@@ -443,24 +443,24 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
     outFile << "active" << std::endl;
     outFile.close();
     //Generate and execute the command to download the livestream
-    std::string dlCommand = "ffmpeg -loglevel -8 -y -i `youtube-dl -f " + qualityArgs + " --abort-on-unavailable-fragment -g " + youtubeURL + "` " + archiveDir + saveName + ".ts";
+    std::string dlCommand = "ffmpeg -loglevel -8 -y -i `youtube-dl -f " + qualityArgs + " --abort-on-unavailable-fragment --no-continue --quiet -g " + youtubeURL + "` -c copy " + archiveDir + saveName + ".mp4";
     print(1, "Download command for " + activityName + ": " + dlCommand);
     system(dlCommand.c_str());
     //Re-encode the video if the option is enabled
-    if (finalFormat != "ts")
+    if (finalFormat != "mp4")
     {
-        print(1, "Final format is not .ts, converting to " + finalFormat);
+        print(1, "Final format is not .mp4, converting to " + finalFormat);
         try
         {
             print(0, "Finished downloading " + activityName + " stream. Converting to desired format " + finalFormat + "...");
             //Generate the re-encoding command
-            std::string convertCommand = "ffmpeg -loglevel -8 -y -i " + archiveDir + saveName + ".ts " + archiveDir + saveName + "." + finalFormat;
+            std::string convertCommand = "ffmpeg -loglevel -8 -y -i " + archiveDir + saveName + ".mp4 " + archiveDir + saveName + "." + finalFormat;
             print(1, "Conversion command for " + activityName + ": " + convertCommand);
             //Execute the re-encoding command
             system(convertCommand.c_str());
             print(0, "Removing original " + activityName + " stream...");
             //Generate the removal command
-            std::string removeCommand = "rm " + archiveDir + saveName + ".ts";
+            std::string removeCommand = "rm " + archiveDir + saveName + ".mp4";
             print(1, "Removal command for " + activityName + ": " + removeCommand);
             //Execute the removal command
             system(removeCommand.c_str());
