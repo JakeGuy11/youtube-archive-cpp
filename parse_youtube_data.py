@@ -60,6 +60,7 @@ try:
     json_string = needed_json.split(";</script>")[0].rstrip()
 except:
     print("network error")
+    exit(1)
 
 try:
     # Load the json string into a json object
@@ -82,3 +83,4 @@ try:
     print(return_string)
 except:
     print("json error")
+    exit(1)
