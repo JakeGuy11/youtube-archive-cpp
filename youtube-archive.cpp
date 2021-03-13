@@ -31,7 +31,7 @@ std::string moveLocation = "";
 //Set the default print level to 0. -n is quiet, +1 is debug
 int printLvl = 0;
 //Create a default download quality string
-std::string qualityArgs = "worst";
+std::string qualityArgs = "worst[height=480]";
 
 void print(int level, auto msg)
 {
