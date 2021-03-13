@@ -1,11 +1,3 @@
-TEMPORARY NOTE:
-After some more testing, a new problem was revealed. Depending on the specs of your computer, downloading too many streams at once can corrupt small sections of the video and, in extreme cases, even cause the program to crash.
-For now, it is recommended that you don't download more than one stream at a time if you're using a bad-medium laptop or a bad PC. If you have a good/gaming laptop or a medium/good/gaming PC, it's recommended that you don't download more than three streams at a time.
-For reference, on a ThinkPad T530 (intel i7 @ 2.9GHz, 16GB DDR3), two streams could be downloaded at once with a very small amout of corruption.
-
-If you want to maxumize preformance while downloading more than the reccomended amount of streams, you should not change the format (i.e. omit the -f option), as this takes up a lot of system resources. A fix will be provided soon.
-
-
 Welcome to youtube-archive, an application that archives youtube streams!
 
 I am not responsible for anything you want to do with what you download.
@@ -31,4 +23,6 @@ Run options:
     -f, --format <VIDEOFORMAT>                       Convert the downloaded video to the entered format. All formats supported by FFMPEG are supported by this program as well.
     -m, --move <LOCATION>                            Move the final video to the specified directory. The characters '~/' at the start of the path will indicate the home directory.
     -p, --print-level <LEVEL>                        Change the amount of printing the program does. -1 is quiet (errors only) and 1 is debug mode(not reccomended). Default is 0.
-    -q, --quality-args <ARGS>                        Define custom quality arguments. Default is worst. See README.md for more information.
+    -q, --quality-args <ARGS>                        Define custom quality arguments. Default is worst. See the end of this message for details and examples
+
+A new feature has just been added: video quality selection. In past versions, this tool would download every stream in the best quality. Now, an option has been added that allows the user to specify the format and its properties. after passing the -q (or --quality-args) flag, follow it with any of the following arguments; "res" (resolution, valid values include 144, 480, 720, 1080, etc.), fps (frames per second) and tbr/abr/vbr (average/audio/video bitrate). Relative operators are required between the properties and the values, and different properties must be separated with commas. SURROUND THE ENTIRE STATEMENT WITH QUOTATION MARKS. For example, '"res=480,fps>=30"' will download the stream at 480p and 30fps or higher. If this format is not available, it will default to the worst quality that is 480p. See line 765 of the youtube-dl man page for all available properties. Note that some properties will not be relevant and may even cause errors.
