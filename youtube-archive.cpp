@@ -364,6 +364,51 @@ bool fileExists(const std::string& fileName)
     return f.good();
 }
 
+void parseQArgs(std::string qualityString)
+{
+
+    std::stringstream tempStream(qualityString);
+    std::vector<std::string> qualityArgumentVector;
+    std::string foundString = "";
+
+    //This will loop until the end of the string and will add foundString to the vector every time it finds the regex
+    while (std::getline(tempStream, foundString, ',')) {
+        qualityArgumentVector.push_back(foundString);
+    }
+
+    //Print out the elements raw of the array
+    for(int i = 0; i < qualityArgumentVector.size(); i++)
+    {
+        print(1, "Current unparsed element of quality arguments: " + qualityArgumentVector[i]);
+        print(1, "Replacing any \"res\" with \"height\"");
+        std::size_t resPos = qualityArgumentVector[i].find("res");
+        if(resPos != std::string::npos)
+        {
+            print(1, "Found \"res\" in element " + std::to_string(i));
+            qualityArgumentVector[i].replace(resPos, 3, "height");
+            print(1, "Replaced \"res\", new argument: " + qualityArgumentVector[i]);
+        }
+    }
+
+    print(1, "Generating quality arguments...");
+    qualityArgs = "\"worst";
+    for(int j = 0; j < qualityArgumentVector.size(); j++)
+    {
+        qualityArgs = qualityArgs + "[" + qualityArgumentVector[j] + "]";
+    }
+    print(1, "Generated quality arguments: " + qualityArgs);
+    print(1, "Appending defaults to quality arguments...");
+    qualityArgs = qualityArgs + "/worst[height=480]/worst\"";
+    print(1, "Finished generation of quality arguments: " + qualityArgs);
+    
+
+    //If they want best quality, overwrite it with best
+    if(qualityString == "best")
+    {
+        qualityArgs = "best";
+    }
+}
+
 //Return the output of a terminal command
 //Not quite sure what's happening here, just got it off of stackexchange
 std::string getCommandOutput(const char* cmd)
@@ -398,7 +443,7 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
     outFile << "active" << std::endl;
     outFile.close();
     //Generate and execute the command to download the livestream
-    std::string dlCommand = "ffmpeg -loglevel -8 -y -i `youtube-dl -f best -g " + youtubeURL + "` " + archiveDir + saveName + ".ts"; // To fix download persistence error, try adding "--abort-on-unavailable-fragment"
+    std::string dlCommand = "ffmpeg -loglevel -8 -y -i `youtube-dl -f " + qualityArgs + " --abort-on-unavailable-fragment -g " + youtubeURL + "` " + archiveDir + saveName + ".ts";
     print(1, "Download command for " + activityName + ": " + dlCommand);
     system(dlCommand.c_str());
     //Re-encode the video if the option is enabled
@@ -490,20 +535,6 @@ void periodic()
         }
     }
     print(0, "");
-}
-
-void parseQArgs(std::string qualityString)
-{
-
-    std::stringstream tempStream(qualityString);
-    std::vector<std::string> qualityArgumentVector;
-    std::vector<std::pair<std::string,std::string>> parsedArgumentVector;
-    std::string foundString = "";
-
-    //This will loop until the end of the string and will add foundString to the vector every time it finds the regex
-    while (std::getline(tempStream, foundString, ',')) {
-        qualityArgumentVector.push_back(foundString);
-    }
 }
 
 void periodicCaller()
@@ -625,7 +656,7 @@ int main(int argc, char **argv)
             moveLocation = argv[i+1];
             print(1, "Set move location to " + moveLocation);
         }else if (std::string(argv[i]) == "-q" || std::string(argv[i]) == "--quality-args") {
-            //parseQArgs(std::string(argv[i+1]));
+            parseQArgs(std::string(argv[i+1]));
         }
 
     }
