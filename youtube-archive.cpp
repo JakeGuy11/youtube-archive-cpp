@@ -583,6 +583,8 @@ int main(int argc, char **argv)
         if (std::string(argv[i]) == "-p" || std::string(argv[i]) == "--print-level") {
             std::string tempPrintLvl = argv[i+1];
             printLvl = std::stoi(tempPrintLvl);
+        }else if (std::string(argv[i]) == "-v" || std::string(argv[i]) == "--verbose") {
+            printLvl = 10;
         }
     }
     
