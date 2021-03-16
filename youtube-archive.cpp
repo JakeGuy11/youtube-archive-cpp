@@ -32,6 +32,10 @@ std::string moveLocation = "";
 int printLvl = 0;
 //Create a default download quality string
 std::string qualityArgs = "worst[height=480]";
+//Create a boolean for whether or not we want to add the UIDs
+bool UIDEnabled = false;
+//Create an integer for the unique IDs so that nothing gets overwritten
+int UID = 1;
 
 void print(int level, auto msg)
 {
@@ -441,10 +445,23 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
     std::string activityFilePath = archiveDir + "." + activityName;
     print(1, "Activity file path and name: " + activityFilePath);
     std::ofstream outFile(activityFilePath);
+    //Change the save path and name based on whether or not the UID is enabled
+    std::string savePath = "";
+    if(UIDEnabled)
+    {
+        savePath = archiveDir + saveName + "-" + std::to_string(UID);
+        print(1, "Used UID " + std::to_string(UID));
+        UID++;
+    }
+    else
+    {
+        savePath = archiveDir + saveName;
+    }
+    print(1, "Save Path: " + savePath);
     outFile << "active" << std::endl;
     outFile.close();
     //Generate and execute the command to download the livestream
-    std::string dlCommand = "ffmpeg -loglevel -8 -y -i `youtube-dl -f " + qualityArgs + " --abort-on-unavailable-fragment --no-continue --quiet -g " + youtubeURL + "` -c copy " + archiveDir + saveName + ".mp4";
+    std::string dlCommand = "ffmpeg -loglevel -8 -y -i `youtube-dl -f " + qualityArgs + " --abort-on-unavailable-fragment --no-continue --quiet -g " + youtubeURL + "` -c copy " + savePath + ".mp4";
     print(1, "Download command for " + activityName + ": " + dlCommand);
     system(dlCommand.c_str());
     //Re-encode the video if the option is enabled
@@ -455,13 +472,13 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
         {
             print(0, "Finished downloading " + activityName + " stream. Converting to desired format " + finalFormat + "...");
             //Generate the re-encoding command
-            std::string convertCommand = "ffmpeg -loglevel -8 -y -i " + archiveDir + saveName + ".mp4 " + archiveDir + saveName + "." + finalFormat;
+            std::string convertCommand = "ffmpeg -loglevel -8 -y -i " + savePath + ".mp4 " + savePath + "." + finalFormat;
             print(1, "Conversion command for " + activityName + ": " + convertCommand);
             //Execute the re-encoding command
             system(convertCommand.c_str());
             print(0, "Removing original " + activityName + " stream...");
             //Generate the removal command
-            std::string removeCommand = "rm " + archiveDir + saveName + ".mp4";
+            std::string removeCommand = "rm " + savePath + ".mp4";
             print(1, "Removal command for " + activityName + ": " + removeCommand);
             //Execute the removal command
             system(removeCommand.c_str());
@@ -479,7 +496,7 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
         {
             print(0, "Moving to location " + moveLocation);
             //Generate the move command
-            std::string moveCommand = "mv " + archiveDir + saveName + "." + finalFormat + " " + moveLocation;
+            std::string moveCommand = "mv " + savePath + "." + finalFormat + " " + moveLocation;
             print(1, "Move command for " + activityName + ": " + moveCommand);
             //Execute the move command
             system(moveCommand.c_str());
@@ -600,7 +617,6 @@ int main(int argc, char **argv)
         print(1, "On argument " + std::to_string(i) + " of argv: " + argv[i]);
         if (std::string(argv[i]) == "-h" || std::string(argv[i]) == "--help") {
             print(1, "Help requested");
-            //If it's help, print the help message
             help();
         }else if (std::string(argv[i]) == "-a" || std::string(argv[i]) == "--add") {
             print(1, "Add requested");
@@ -654,13 +670,15 @@ int main(int argc, char **argv)
             finalFormat = argv[i+1];
             print(1, "Set format to " + finalFormat);
         }else if (std::string(argv[i]) == "-m" || std::string(argv[i]) == "--move") {
-            print(1, "Move requested to " + argv[i+1]);
             //Change the move location
             moveLocation = argv[i+1];
-            print(1, "Set move location to " + moveLocation);
+            print(1, "Setting move location to " + moveLocation);
         }else if (std::string(argv[i]) == "-q" || std::string(argv[i]) == "--quality-args") {
-            print(1, "Quality string: " + argv[i+1]);
+            print(1, "Quality string: " + std::string(argv[i+1]));
             parseQArgs(std::string(argv[i+1]));
+        }else if (std::string(argv[i]) == "-u" || std::string(argv[i]) == "--unique-ids") {
+            print(1, "Unique IDs requested");
+            UIDEnabled = true;
         }
 
     }
