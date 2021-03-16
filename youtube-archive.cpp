@@ -440,14 +440,25 @@ std::string getCommandOutput(const char* cmd)
     return result;
 }
 
-std::string generateTitle(std::string titleRegex)
+std::string generateTitle(std::string titleRegex, std::string idStr, std::string nameStr, std::string dateStr, std::string titleStr)
 {
-    return "";
+    print(1, "Parsing title expressions");
+    print(1, "Replacing %I with " + idStr);
+    titleRegex = replaceCharacters(titleRegex, "%I", idStr, 2);
+    print(1, "Replacing %N with " + nameStr);
+    titleRegex = replaceCharacters(titleRegex, "%N", nameStr, 2);
+    print(1, "Replacing %D with " + dateStr);
+    titleRegex = replaceCharacters(titleRegex, "%D", dateStr, 2);
+    print(1, "Replacing %T with " + titleStr);
+    titleRegex = replaceCharacters(titleRegex, "%T", titleStr, 2);
+    print(1, "Final title string: " + titleRegex);
+    return titleRegex;
 }
 
 //Start the archive. This will be run asynchronously
 void startArchive(std::string youtubeURL, std::string saveName, std::string activityName)
 {
+    print(1, "TEST: Generating test-%T-%D-%I: " + generateTitle("test-%T-%D-%I", std::to_string(UID), "NAME", "DATE", "TITLE"));
     print(1, "Starting archive of " + activityName);
     print(1, "YouTube URL to download: " + youtubeURL);
     //Create the activity file, a file that will indicate that a stream is being archived
