@@ -76,9 +76,10 @@ try:
                      ["content"]["sectionListRenderer"]["contents"][0]["itemSectionRenderer"]["contents"][0][
                      "channelFeaturedContentRenderer"]["items"][0]["videoRenderer"]["title"]["runs"][0]["text"])
     # Generate the title of the saved video from the current date and the user passed title
-    return_title = date.today().strftime("%d-%m-%Y") + "-" + sys.argv[2]
+    video_title_fixed = video_name.replace(' ', '-')
+    date_today = date.today().strftime("%d-%m-%Y")
     # Generate a formatted return string
-    return_string = video_url.rstrip() + ";" + return_title
+    return_string = video_url.rstrip() + ";" + video_title_fixed + ";" + date_today
     # Print out a formatted return that the c++ can parse
     print(return_string)
 except:
