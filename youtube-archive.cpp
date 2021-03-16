@@ -368,6 +368,16 @@ bool fileExists(const std::string& fileName)
     return f.good();
 }
 
+std::string replaceCharacters(std::string inStr, std::string findStr, std::string replaceStr, int length)
+{
+    std::size_t resPos = inStr.find(findStr);
+    if(resPos != std::string::npos)
+    {
+        inStr.replace(resPos, length, replaceStr);
+    }
+    return inStr;
+}
+
 void parseQArgs(std::string qualityString)
 {
 
@@ -386,13 +396,7 @@ void parseQArgs(std::string qualityString)
     {
         print(1, "Current unparsed element of quality arguments: " + qualityArgumentVector[i]);
         print(1, "Replacing any \"res\" with \"height\"");
-        std::size_t resPos = qualityArgumentVector[i].find("res");
-        if(resPos != std::string::npos)
-        {
-            print(1, "Found \"res\" in element " + std::to_string(i));
-            qualityArgumentVector[i].replace(resPos, 3, "height");
-            print(1, "Replaced \"res\", new argument: " + qualityArgumentVector[i]);
-        }
+        qualityArgumentVector[i] = replaceCharacters(qualityArgumentVector[i], "res", "height", 3);
     }
 
     print(1, "Generating quality arguments...");
@@ -434,6 +438,11 @@ std::string getCommandOutput(const char* cmd)
     print(1, "Removing new lines");
     print(1, "Returning " + result);
     return result;
+}
+
+std::string generateTitle(std::string titleRegex)
+{
+    return "";
 }
 
 //Start the archive. This will be run asynchronously
