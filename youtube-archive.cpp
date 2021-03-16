@@ -36,6 +36,8 @@ std::string qualityArgs = "worst[height=480]";
 bool UIDEnabled = false;
 //Create an integer for the unique IDs so that nothing gets overwritten
 int UID = 1;
+//A string for the title
+std::string unparsedSaveName = "Date-%D-Name-%N-Title-%T-ID-%I";
 
 void print(int level, auto msg)
 {
@@ -65,7 +67,7 @@ std::string parseChannelURL(std::string url)
     return channelWithSlash;
 }
 
-//Parse the python output, which will be formatted as url;saveName
+//Parse the python output, which will be formatted as url;videoTitle;date
 std::vector<std::string> parsePythonOutput(std::string const pythonOut)
 {
     print(1, "Parsing python output: " + pythonOut);
@@ -458,7 +460,6 @@ std::string generateTitle(std::string titleRegex, std::string idStr, std::string
 //Start the archive. This will be run asynchronously
 void startArchive(std::string youtubeURL, std::string saveName, std::string activityName)
 {
-    print(1, "TEST: Generating test-%T-%D-%I: " + generateTitle("test-%T-%D-%I", std::to_string(UID), "NAME", "DATE", "TITLE"));
     print(1, "Starting archive of " + activityName);
     print(1, "YouTube URL to download: " + youtubeURL);
     //Create the activity file, a file that will indicate that a stream is being archived
@@ -481,7 +482,7 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
     outFile << "active" << std::endl;
     outFile.close();
     //Generate and execute the command to download the livestream
-    std::string dlCommand = "ffmpeg -loglevel -8 -y -i `youtube-dl -f " + qualityArgs + " --abort-on-unavailable-fragment --no-continue --quiet -g " + youtubeURL + "` -c copy " + savePath + ".mp4";
+    std::string dlCommand = "ffmpeg -loglevel -8 -y -i `youtube-dl -f " + qualityArgs + " --abort-on-unavailable-fragment --no-continue --quiet -g " + youtubeURL + "` -c copy \"" + savePath + ".mp4\"";
     print(1, "Download command for " + activityName + ": " + dlCommand);
     system(dlCommand.c_str());
     //Re-encode the video if the option is enabled
@@ -492,13 +493,13 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
         {
             print(0, "Finished downloading " + activityName + " stream. Converting to desired format " + finalFormat + "...");
             //Generate the re-encoding command
-            std::string convertCommand = "ffmpeg -loglevel -8 -y -i " + savePath + ".mp4 " + savePath + "." + finalFormat;
+            std::string convertCommand = "ffmpeg -loglevel -8 -y -i \"" + savePath + ".mp4\" \"" + savePath + "." + finalFormat + "\"";
             print(1, "Conversion command for " + activityName + ": " + convertCommand);
             //Execute the re-encoding command
             system(convertCommand.c_str());
             print(0, "Removing original " + activityName + " stream...");
             //Generate the removal command
-            std::string removeCommand = "rm " + savePath + ".mp4";
+            std::string removeCommand = "rm \"" + savePath + ".mp4\"";
             print(1, "Removal command for " + activityName + ": " + removeCommand);
             //Execute the removal command
             system(removeCommand.c_str());
@@ -516,7 +517,7 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
         {
             print(0, "Moving to location " + moveLocation);
             //Generate the move command
-            std::string moveCommand = "mv " + savePath + "." + finalFormat + " " + moveLocation;
+            std::string moveCommand = "mv \"" + savePath + "." + finalFormat + "\" " + moveLocation;
             print(1, "Move command for " + activityName + ": " + moveCommand);
             //Execute the move command
             system(moveCommand.c_str());
@@ -552,7 +553,7 @@ void periodic()
         {
             print(0, sessionQueue[i].second + " activity file doesn't exist, checking for stream...");
             //Generate the python command, execute it, get the output and parse it
-            std::string arguments = "/opt/youtube-archive/parse_youtube_data.py " + sessionQueue[i].first + " " + sessionQueue[i].second;
+            std::string arguments = "/opt/youtube-archive/parse_youtube_data.py " + sessionQueue[i].first;
             print(1, "Generated python command: " + arguments);
             std::string pythonOut = getCommandOutput(arguments.c_str());
             print(1, "Python output: " + pythonOut);
@@ -561,10 +562,13 @@ void periodic()
                 print(1, "Parsing python output...");
                 std::vector<std::string> parsedPython = parsePythonOutput(pythonOut);
                 print(1, "Parsed python output");
-                if(parsedPython.size() < 2) throw (1);
-                print(1, "Adding process asynchronously: startArchive with arguments " + parsedPython[0] + ", " + parsedPython[1] + ", " + sessionQueue[i].second); 
+                if(parsedPython.size() < 3) throw (1);
+                print(1, "Parsing title regex");
+                std::string saveTitle = generateTitle(unparsedSaveName, std::to_string(UID), sessionQueue[i].second, parsedPython[2], parsedPython[1]); //date title
+                print(1, "Parsed title: " + saveTitle);
+                print(1, "Adding process asynchronously: startArchive with arguments " + parsedPython[0] + ", " + saveTitle + ", " + sessionQueue[i].second); 
                 //Start the archive asynchronously
-                procVector.push_back(std::async(startArchive, parsedPython[0], parsedPython[1], sessionQueue[i].second));
+                procVector.push_back(std::async(startArchive, parsedPython[0], saveTitle, sessionQueue[i].second));
             }
             catch (...)
             {
