@@ -374,6 +374,7 @@ void parseQArgs(std::string qualityString)
     //This will loop until the end of the string and will add foundString to the vector every time it finds the regex
     while (std::getline(tempStream, foundString, ',')) {
         qualityArgumentVector.push_back(foundString);
+        print(1, "Found element of quality vector: " + foundString);
     }
 
     //Print out the elements raw of the array
@@ -653,11 +654,12 @@ int main(int argc, char **argv)
             finalFormat = argv[i+1];
             print(1, "Set format to " + finalFormat);
         }else if (std::string(argv[i]) == "-m" || std::string(argv[i]) == "--move") {
-            print(1, "Move requested");
+            print(1, "Move requested to " + argv[i+1]);
             //Change the move location
             moveLocation = argv[i+1];
             print(1, "Set move location to " + moveLocation);
         }else if (std::string(argv[i]) == "-q" || std::string(argv[i]) == "--quality-args") {
+            print(1, "Quality string: " + argv[i+1]);
             parseQArgs(std::string(argv[i+1]));
         }
 
