@@ -37,7 +37,7 @@ bool UIDEnabled = false;
 //Create an integer for the unique IDs so that nothing gets overwritten
 int UID = 1;
 //A string for the title
-std::string unparsedSaveName = "Date-%D-Name-%N-Title-%T-ID-%I";
+std::string unparsedSaveName = "%D-%N";
 
 void print(int level, auto msg)
 {
@@ -703,6 +703,9 @@ int main(int argc, char **argv)
         }else if (std::string(argv[i]) == "-u" || std::string(argv[i]) == "--unique-ids") {
             print(1, "Unique IDs requested");
             UIDEnabled = true;
+        }else if (std::string(argv[i]) == "-c" || std::string(argv[i]) == "--custom-title") {
+            print(1, "Setting custom title to " + std::string(argv[i+1]));
+            unparsedSaveName = argv[i+1];
         }
 
     }
