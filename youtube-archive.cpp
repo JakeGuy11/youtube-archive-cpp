@@ -373,9 +373,10 @@ bool fileExists(const std::string& fileName)
 std::string replaceCharacters(std::string inStr, std::string findStr, std::string replaceStr, int length)
 {
     std::size_t resPos = inStr.find(findStr);
-    if(resPos != std::string::npos)
+    while(resPos != std::string::npos)
     {
         inStr.replace(resPos, length, replaceStr);
+        resPos = inStr.find(findStr);
     }
     return inStr;
 }
