@@ -82,6 +82,11 @@ youtube-archive --add https://www.youtube.com/channel/CHANNELCODE EntryNickname
 youtube-archive --temp https://www.youtube.com/channel/CHANNELCODE EntryNickname
 ```
 
+**Start downloading with credentials(*Untested*):**
+```bash
+youtube-archive -username "YourYoutubeEmail@gmail.com" --password "YourYoutubePassword" --start
+```
+
 **Start the program scanning for entries in the saved queue:**
 ```bash
 youtube-archive --start
