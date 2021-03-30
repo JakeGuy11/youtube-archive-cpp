@@ -38,6 +38,11 @@ bool UIDEnabled = false;
 int UID = 1;
 //A string for the title
 std::string unparsedSaveName = "%D-%N";
+//A bool for whether or not the user is enabling the login feature
+bool loginEnabled = false;
+//Strings for if the username and password are enabled
+std::string userUsername = "";
+std::string userPassword = "";
 
 void print(int level, auto msg)
 {
@@ -483,7 +488,7 @@ void startArchive(std::string youtubeURL, std::string saveName, std::string acti
     outFile << "active" << std::endl;
     outFile.close();
     //Generate and execute the command to download the livestream
-    std::string dlCommand = "ffmpeg -loglevel -8 -y -i `youtube-dl -f " + qualityArgs + " --abort-on-unavailable-fragment --no-continue --quiet -g " + youtubeURL + "` -c copy \"" + savePath + ".mp4\"";
+    std::string dlCommand = "ffmpeg -loglevel -8 -y -i `youtube-dl -f " + qualityArgs + " -u \"" + userUsername + "\" -p \"" + userPassword + "\" --abort-on-unavailable-fragment --no-continue --quiet -g " + youtubeURL + "` -c copy \"" + savePath + ".mp4\"";
     print(1, "Download command for " + activityName + ": " + dlCommand);
     system(dlCommand.c_str());
     //Re-encode the video if the option is enabled
@@ -707,6 +712,14 @@ int main(int argc, char **argv)
         }else if (std::string(argv[i]) == "-c" || std::string(argv[i]) == "--custom-title") {
             print(1, "Setting custom title to " + std::string(argv[i+1]));
             unparsedSaveName = argv[i+1];
+        }else if (std::string(argv[i]) == "--username") {
+            print(1, "User has opted to add a username: " + std::string(argv[i+1]));
+            loginEnabled = true;
+            userUsername = argv[i+1];
+        }else if (std::string(argv[i]) == "--password") {
+            print(1, "User has opted to add a password: " + std::string(argv[i+1]));
+            loginEnabled = true;
+            userPassword = argv[i+1];
         }
 
     }
